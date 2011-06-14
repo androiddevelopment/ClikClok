@@ -2,12 +2,12 @@ package com.clikclok.test;
 
 import junit.framework.TestCase;
 
-import com.clikclok.Tile;
-import com.clikclok.TileColour;
-import com.clikclok.TileDirection;
-import com.clikclok.TilePosition;
-import com.clikclok.TileStatus;
-import com.clikclok.TileUpdater;
+import com.clikclok.domain.Tile;
+import com.clikclok.domain.TileColour;
+import com.clikclok.domain.TileDirection;
+import com.clikclok.domain.TilePosition;
+import com.clikclok.domain.TileStatus;
+import com.clikclok.service.TileUpdater;
 
 public class TileUpdaterTest extends TestCase {
 	private TileUpdater tileUpdater;	
