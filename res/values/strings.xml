@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, ClikClok!</string>
+    <string name="app_name">ClikClok</string>
+    <string name="game_score">Score Displayed Here</string>
+    <string name="level_complete">Level %s complete!</string>
+    <string name="proceed_button">Proceed to next level </string>
+</resources>
