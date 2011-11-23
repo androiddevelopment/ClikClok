@@ -4,12 +4,17 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
     >
+    <!-- Width is size of tile times ten, minus one eight -->
+    <!-- Height is size of tile times thirteen. Minus an eight does not have any impact here -->
+    <!-- Vertical spacing attempts to pull cells closer to each other by one eight -->
     <GridView 
 	android:id="@+id/gridview"
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent"
-	android:stretchMode="columnWidth"
+	android:layout_width="306.25px" 
+	android:layout_height="455px"	
 	android:gravity="center"
+	android:stretchMode="columnWidth"
+	android:horizontalSpacing="0px"
+	android:verticalSpacing="-4.375px"
 	/>
 	<LinearLayout 
 	android:orientation="horizontal"

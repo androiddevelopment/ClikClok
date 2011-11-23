@@ -5,8 +5,8 @@ import com.clikclok.R;
 public enum TileColour {
 	GREEN (R.drawable.green_icon),
 	RED (R.drawable.red_icon),
-	GREY (R.drawable.grey_icon);
-	
+	GREY (R.drawable.grey_icon),
+	RED_TURNING(R.drawable.red_icon_turning);	
 	
 	private int iconColour;
 	

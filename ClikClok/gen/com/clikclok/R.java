@@ -16,6 +16,7 @@ public final class R {
         public static final int icon=0x7f020002;
         public static final int logo=0x7f020003;
         public static final int red_icon=0x7f020004;
+        public static final int red_icon_turning=0x7f020005;
     }
     public static final class id {
         public static final int gridview=0x7f050000;
@@ -25,6 +26,7 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f040001;
+        public static final int game_complete=0x7f040005;
         public static final int game_score=0x7f040002;
         public static final int hello=0x7f040000;
         public static final int level_complete=0x7f040003;

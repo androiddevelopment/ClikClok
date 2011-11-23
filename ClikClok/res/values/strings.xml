@@ -4,5 +4,6 @@
     <string name="app_name">ClikClok</string>
     <string name="game_score">Score Displayed Here</string>
     <string name="level_complete">Level %s complete!</string>
-    <string name="proceed_button">Proceed to next level </string>
+    <string name="proceed_button">Proceed to next level</string>
+    <string name="game_complete">Game Over! %s the winner!</string>
 </resources>
