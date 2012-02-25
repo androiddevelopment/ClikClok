@@ -31,7 +31,7 @@ public class TileUpdateLogicServiceTest extends TestCase {
 	{
 		Tile tileUpdated = tileStatus.getTileInformation(new TilePosition(0, 0));
 		
-		tileUpdater.updateColours(tileUpdated, tileStatus, TileColour.GREEN, TileColour.RED);	
+		tileUpdater.updateColours(tileUpdated, tileStatus, TileColour.GREEN, TileColour.RED, 0);	
 				
 		assertEquals(6, tileStatus.getNumberOfTilesForColour(TileColour.GREEN));
 		assertEquals(TileColour.GREEN, tileStatus.getTileInformation(new TilePosition(1, 0)).getColour());
@@ -55,7 +55,7 @@ public class TileUpdateLogicServiceTest extends TestCase {
 		tileStatus.updateTile(tileTwo);
 		Tile tileUpdated = tileStatus.getTileInformation(new TilePosition(0,0));
 		
-		tileUpdater.updateColours(tileUpdated, tileStatus, TileColour.GREEN, TileColour.RED);	
+		tileUpdater.updateColours(tileUpdated, tileStatus, TileColour.GREEN, TileColour.RED, 0);	
 		
 		Set<TilePosition> greenPositions = tileStatus.getTilePositionsForColour(TileColour.GREEN);
 		
@@ -77,7 +77,7 @@ public class TileUpdateLogicServiceTest extends TestCase {
 		tileStatus.updateTile(tile);
 		Tile tileUpdated = tileStatus.getTileInformation(new TilePosition(0,0));
 		
-		tileUpdater.updateColours(tileUpdated, tileStatus, TileColour.GREEN, TileColour.RED);	
+		tileUpdater.updateColours(tileUpdated, tileStatus, TileColour.GREEN, TileColour.RED, 0);	
 		
 		Set<TilePosition> greenPositions = tileStatus.getTilePositionsForColour(TileColour.GREEN);
 		
