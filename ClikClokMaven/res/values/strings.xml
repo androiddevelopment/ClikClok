@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ClikClok</string>
+    <string name="levelComplete">Level %s complete!</string>
+    <string name="proceedButton">Proceed to next level</string>
+    <string name="initialScore">000</string>
+    <string name="levelLabel">Level </string>
+    <string name="levelNumber">1</string>
+    <string name="userIsWinner">Congratulations, click the button to claim your prize!</string>
+    <string name="aiIsWinner">You lost! Play again?</string>
+    <string name="noButton">No</string>
+    <string name="yesButton">Yes</string>
+    <string name="prizeButton">My prize</string>
+    <string name="introduction">Welcome! Click Start to play!</string>  
+    <string name="startGameButton">Start</string>   
+    <string name="rulesButton">How To Play</string> 
+    <string name="okButton">OK</string>
+    <string name="enableSounds">Enable Sounds</string>  
+    <string name="rules">Objective is to clear all red tiles from the grid.\n 
+    You will control the green tiles. Selecting a tile will turn it clockwise, and you will
+    then take control of the tile it touches and any other tiles that the "touched" tile touches.\n
+    There are 5 levels. On the fifth level, you will only have 5 seconds to take your turn.	
+    </string> 
+    <string name="prizeURL">http://www.google.com</string> 
+    <string name="clikText">Clik</string> 
+    <string name="clokText">Clok</string> 
+</resources>

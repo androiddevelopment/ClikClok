@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="clikTitleStyle" parent="@style/clikClokTitleStyle">
+	    <item name="android:textColor">#51d947</item>
+	</style>
+	<style name="clokTitleStyle" parent="@style/clikClokTitleStyle">
+	    <item name="android:textColor">#da0909</item>
+	    <item name="android:layout_toRightOf">@id/clikTitle</item>
+	</style>
+	<style name="dialogTextStyle">
+	    <item name="android:layout_width">wrap_content</item>
+	    <item name="android:layout_height">wrap_content</item>
+	    <item name="android:textColor">#000000</item>
+	    <item name="android:textSize">15sp</item>
+	    <item name="android:typeface">serif</item>
+	    <item name="android:lineSpacingExtra">4sp</item>
+	    <item name="android:layout_marginTop">10dp</item>
+	    <item name="android:layout_below">@id/clikTitle</item>
+	</style>
+	<style name="clikClokTitleStyle">
+	    <item name="android:layout_width">wrap_content</item>
+	    <item name="android:layout_height">wrap_content</item>
+	    <item name="android:textSize">40sp</item>
+	</style>
+	<style name="dialogButtonStyle">
+	    <item name="android:layout_width">fill_parent</item>
+	    <item name="android:layout_height">wrap_content</item>
+	    <item name="android:textSize">15sp</item>
+	    <item name="android:background">@layout/dialog_button_background</item>
+	    <item name="android:textColor">#ffffff</item>
+	    <item name="android:paddingLeft">20dp</item>
+	    <item name="android:paddingRight">20dp</item>
+	    <item name="android:paddingTop">10dp</item>
+	    <item name="android:paddingBottom">10dp</item>
+	    <item name="android:layout_weight">1</item>
+	</style>
+	<style name="rightDialogButtonStyle" parent="@style/dialogButtonStyle">
+    	<item name="android:layout_marginLeft">20dp</item>
+    </style>
+	<style name="myAlertDialogStyle" parent="@android:style/Theme.Dialog">
+		<item name="android:windowBackground">@layout/dialog_background</item>
+	    <item name="android:colorBackgroundCacheHint">@null</item>
+	    <item name="android:windowIsTranslucent">true</item>
+	    <item name="android:windowNoTitle">true</item>
+	    <item name="android:windowContentOverlay">@null</item>
+	    <item name="android:windowFullscreen">true</item>
+ 	</style>
+ 	<style name="countdownTimerStyle">
+		<item name="android:layout_width">fill_parent</item>
+	    <item name="android:layout_height">fill_parent</item>
+	    <item name="android:background">@layout/grid_background</item>
+	    <item name="android:textSize">450sp</item>
+	    <item name="android:textColor">#F27B3F</item>
+	    <item name="android:gravity">center</item>
+ 	</style>
+ 	<style name="gridViewStyle">
+		<item name="android:layout_width">fill_parent</item>
+	    <item name="android:layout_height">fill_parent</item>
+	    <item name="android:horizontalSpacing">0dp</item>
+	    <item name="android:stretchMode">columnWidth</item>
+	    <item name="android:gravity">fill_horizontal|top</item>
+ 	</style>
+ 	<style name="levelLabelStyle">
+		<item name="android:layout_width">wrap_content</item>
+	    <item name="android:layout_height">wrap_content</item>
+	    <item name="android:textSize">35sp</item>
+   	</style>
+   	<style name="levelNumberStyle" parent="@style/levelLabelStyle">
+		<item name="android:layout_marginLeft">10dp</item>
+   	</style>
+   	<style name="soundIconStyle">
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:src">@drawable/volume_icon</item>
+		<item name="android:layout_marginLeft">40dp</item>
+   	</style>
+   	<style name="scoreStyle">
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:textSize">35sp</item>
+	</style>
+	<style name="userScoreStyle" parent="@style/scoreStyle">
+		<item name="android:textColor">#51d947</item>
+		<item name="android:layout_marginLeft">50dp</item>
+	</style>
+	<style name="aiScoreStyle" parent="@style/scoreStyle">
+		<item name="android:textColor">#da0909</item>
+		<item name="android:layout_marginLeft">10dp</item>
+	</style>
+	<style name="gameBackgroundStyle">
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">fill_parent</item>
+		<item name="android:background">@layout/overall_background</item>
+		<item name="android:paddingLeft">20dp</item>
+		<item name="android:paddingTop">20dp</item>
+		<item name="android:orientation">vertical</item>
+	</style>
+	<style name="gridFrameLayoutStyle">
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+	</style>
+	<style name="informationPaneLayoutStyle">
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">fill_parent</item>
+		<item name="android:paddingTop">5dp</item>
+	</style>
+	<style name="dialogButtonLayoutStyle">
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">fill_parent</item>
+		<item name="android:layout_marginTop">15dp</item>
+	</style>
+	<style name="dialogBackgroundLayoutStyle">
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:orientation">vertical</item>
+		<item name="android:padding">30dp</item>
+	</style>
+	<style name="dialogTitleLayoutStyle">
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+	</style>
+</resources>

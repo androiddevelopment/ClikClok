@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+style="@style/gameBackgroundStyle">
+    <FrameLayout
+    android:id="@+id/gridViewFrame"
+    style="@style/gridFrameLayoutStyle">
+		<TextView
+	    android:id="@+id/countDownTimer"
+		style="@style/countdownTimerStyle"/>    
+	    <GridView 
+		android:id="@+id/gridView"
+		style="@style/gridViewStyle"/>
+	</FrameLayout>
+	<LinearLayout 
+	style="@style/informationPaneLayoutStyle">
+		<TextView
+		android:id="@+id/levelLabel"
+		android:text="@string/levelLabel"
+		style="@style/levelLabelStyle"/>
+		<TextView
+		android:id="@+id/levelNumber"
+		android:text="@string/levelNumber"
+		style="@style/levelNumberStyle"/>
+		<ImageView 
+		android:id="@+id/enableSoundsView"
+		style="@style/soundIconStyle"/>		
+		<TextView
+	    android:id="@+id/userScore"
+		android:text="@string/initialScore"
+		style="@style/userScoreStyle"/>
+		<TextView
+	    android:id="@+id/aiScore"
+		android:text="@string/initialScore"
+		style="@style/aiScoreStyle"
+		/>					
+	</LinearLayout>
+</LinearLayout>

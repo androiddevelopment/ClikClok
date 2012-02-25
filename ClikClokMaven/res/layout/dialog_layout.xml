@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+style="@style/dialogBackgroundLayoutStyle">
+	<RelativeLayout 
+    style="@style/dialogTitleLayoutStyle">
+	    <TextView
+	    android:id="@+id/clikTitle"
+		style="@style/clikTitleStyle"
+		android:text="@string/clikText"/>
+	    <TextView
+	    android:id="@+id/clokTitle"
+		style="@style/clokTitleStyle"
+		android:text="@string/clokText"
+		/>
+	  	<TextView
+	    android:id="@+id/dialogText"
+		style="@style/dialogTextStyle"/>    
+	</RelativeLayout>    	
+	<LinearLayout 
+	style="@style/dialogButtonLayoutStyle">
+		<Button
+		android:id="@+id/leftButton"
+		style="@style/dialogButtonStyle">
+		</Button>
+		<Button 
+		android:id="@+id/rightButton"
+		style="@style/rightDialogButtonStyle">
+		</Button>
+	</LinearLayout>
+</LinearLayout>

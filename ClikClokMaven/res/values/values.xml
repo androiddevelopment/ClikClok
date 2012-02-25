@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	 <string name="game_font_type">digital.ttf</string>
+	 <string name="clik_clok_font_type">clik_clok.ttf</string>
+	 <string name="dialog_text_font_type">dialog_text.ttf</string>
+</resources>
