@@ -9,11 +9,12 @@ import com.clikclok.domain.TileColour;
 import com.clikclok.domain.Winner;
 import com.clikclok.util.Constants;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class GameLogicService {
 	private Level currentLevel;
 	private Winner winner;
-	@Inject
 	private ClikClokActivity clikClokActivity;
 	@Inject
 	private GameState gameState ;

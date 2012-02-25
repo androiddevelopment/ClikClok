@@ -16,11 +16,8 @@ import com.clikclok.view.TileAdapter;
 import com.google.inject.Inject;
 
 public class ClikClokActivity extends RoboActivity{
-	@Inject
 	private TileAdapter tileAdapter;
-	@Inject
 	private GameLogicService gameLogicService;	
-	@Inject
 	private GridOperationQueue gridOperationQueue;
 	private GridView gridView;
 	private Handler handler;

@@ -7,6 +7,11 @@ public abstract class GridUpdateTask implements Runnable {
 	@Inject
 	private GameLogicService gameLogicService;
 	
+	public GridUpdateTask(GameLogicService gameLogicService)
+	{
+		this.gameLogicService = gameLogicService;
+	}
+	
 	public void refreshGrid()
 	{
 		gameLogicService.updateGrid();

@@ -12,30 +12,22 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import com.clikclok.domain.GameState;
+import com.clikclok.domain.GameState; 
 import com.clikclok.domain.Tile;
 import com.clikclok.domain.TilePosition;
 import com.clikclok.event.TileClickListener;
 import com.clikclok.service.TileOperationService;
 import com.google.inject.Inject;
 
-@ContextSingleton
 public class TileAdapter extends BaseAdapter{
-	@Inject
 	private Context context;
-	@Inject
-	private GameState tileStatus;
-	@Inject
+	private GameState gameState;
 	private TileOperationService tileOperationService;
 				
-	public TileAdapter(Context context) {
-		this.context = context;
-	}
-
 	@Override
 	public int getCount() {
 		// This will return the width and height of the grid
-		return tileStatus.getTileGridSize();
+		return gameState.getTileGridSize();
 	}
 
 	@Override
@@ -58,7 +50,7 @@ public class TileAdapter extends BaseAdapter{
 		ImageView imageView;
 		
 		TilePosition tilePosition = new TilePosition(position);
-		Tile thisTile = tileStatus.getTileInformation(tilePosition);
+		Tile thisTile = gameState.getTileInformation(tilePosition);
  		Log.v(this.getClass().toString(), "Loading image for tile " + thisTile);
 		
  		Log.v(this.getClass().toString(), "Context is " + context);

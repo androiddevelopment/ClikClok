@@ -10,11 +10,8 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class TileOperationService{
-	@Inject
 	private TileUpdateLogicService tileUpdateLogicService;
-	@Inject
 	private GameLogicService gameLogicService;
-	@Inject
 	private GridOperationQueue gridOperationQueue;
 	
 	public void performUserOperation(final Tile clickedTile)
