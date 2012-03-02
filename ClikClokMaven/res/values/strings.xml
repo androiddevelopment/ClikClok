@@ -13,7 +13,7 @@
     <string name="prizeButton">My prize</string>
     <string name="introduction">Welcome! Click Start to play!</string>  
     <string name="startGameButton">Start</string>   
-    <string name="rulesButton">How To Play</string> 
+    <string name="rulesButton">Help</string> 
     <string name="okButton">OK</string>
     <string name="enableSounds">Enable Sounds</string>  
     <string name="rules">Objective is to clear all red tiles from the grid.\n 
@@ -24,4 +24,5 @@
     <string name="prizeURL">http://www.google.com</string> 
     <string name="clikText">Clik</string> 
     <string name="clokText">Clok</string> 
+     <string name="exitText">Are you sure you wish to quit?</string> 
 </resources>

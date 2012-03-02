@@ -3,6 +3,7 @@ package com.clikclok.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -12,29 +13,26 @@ import com.clikclok.domain.GameState;
 import com.clikclok.domain.Level;
 import com.clikclok.domain.Tile;
 import com.clikclok.domain.TileColour;
-import com.clikclok.domain.TileDirection;
 import com.clikclok.domain.TilePosition;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class TileUpdateLogicService {
+	@Inject
+	private TilePositionComparator tilePositionComparator;
 	
-	public int updateColours(Tile tile, GameState tileStatus, TileColour colourToUpdate, TileColour otherColour, int enemyTilesGained)
+	public int updateColoursAndDirection(Tile tile, GameState tileStatus, TileColour colourToUpdate, TileColour otherColour, int enemyTilesGained, boolean updateDirection)
 	{
-		Log.i(this.getClass().toString(), "Entering updateColours for tile " + tile);
-		Log.i(this.getClass().toString(), tileStatus.getNumberOfTilesForColour(TileColour.GREEN) +  " green tiles exist at present");
-		Log.i(this.getClass().toString(), tileStatus.getNumberOfTilesForColour(TileColour.RED) +  " red tiles exist at present");
-		
-		// Update the colour of the tile to be updated
-		tile.setColour(colourToUpdate);
-		
-		Log.i(this.getClass().toString(), "After updating colour, tile is now " + tile);
-		
-		// Update the grid with the updated tile
-		tileStatus.updateTile(tile);
-		
-		Log.i(this.getClass().toString(), tileStatus.getNumberOfTilesForColour(TileColour.GREEN) +  " green tiles exist at present");
-		Log.i(this.getClass().toString(), tileStatus.getNumberOfTilesForColour(TileColour.RED) +  " red tiles exist at present");
+		Log.i(this.getClass().toString(), "Entering updateColours for tile " + tile + " colour to update" + colourToUpdate + " other colour " + otherColour +" enemy tiles gained " +
+				enemyTilesGained + " update direction " + updateDirection);
+		if(updateDirection) {			
+			tileStatus.updateTileColourAndDirection(tile, colourToUpdate);
+		}
+		else {
+			// Update the grid with the updated tile
+			tileStatus.updateTileColour(tile, colourToUpdate);
+		}		
 		
 		Collection<TilePosition> adjacentTiles = tile.getTilePosition().getAdjacentTilePositions();
 		Log.v(this.getClass().toString(), adjacentTiles.size() + " adjacent tiles exist");
@@ -74,7 +72,7 @@ public class TileUpdateLogicService {
 				}
 				
 				Log.i(this.getClass().toString(), "Adjacent tile is different colour so will update it");
-				updateColours(adjacentTile, tileStatus, colourToUpdate, otherColour, enemyTilesGained);
+				enemyTilesGained = updateColoursAndDirection(adjacentTile, tileStatus, colourToUpdate, otherColour, enemyTilesGained, false);
 			}
 		}
 		
@@ -84,20 +82,21 @@ public class TileUpdateLogicService {
 	
 	public Tile calculateOptimumAITile(GameState tileStatus, Level currentLevel)
 	{
-		Log.i(this.getClass().toString(), "Entering calculateOptimumAITile");
-		
-		Log.i(this.getClass().toString(), tileStatus.getNumberOfTilesForColour(TileColour.GREEN) +  " green tiles exist at present");
-		Log.i(this.getClass().toString(), tileStatus.getNumberOfTilesForColour(TileColour.RED) +  " red tiles exist at present");
-		
+		return calculateOptimumAITile(tileStatus, currentLevel, tilePositionComparator);
+	}
+	
+	public Tile calculateOptimumAITile(GameState tileStatus, Level currentLevel, Comparator<TilePosition> tilePositionComparator)
+	{
 		int highestNumberOfAITilesAttained = 0;
 		// User will never have more tiles than the grid size
 		int lowestNumberOfUserTilesExisting = tileStatus.getTileGridSize() + 1;
 		
-		// Will be used to hold the best tile found for the AI to update
-		Tile bestAITile = null;
+		// Will be used to hold the two best tiles found for the AI to update
+		Tile bestAITileForTilesGained = null;
+		Tile bestAITileForEnemyTilesGained = null;
 		
 		// Loop through relevant AI tiles to determine which is the best one to update
-		for(TilePosition aiPosition : getAITilesToSearch(tileStatus.getTilePositionsForColour(TileColour.RED), currentLevel))
+		for(TilePosition aiPosition : getAITilesToSearch(tileStatus.getTilePositionsForColour(TileColour.RED), currentLevel, tilePositionComparator))
 		{
 			// Clone the TileStatus so that we can update it without affecting the "actual" TileStatus
 			GameState copyOfTileStatus = tileStatus.clone();
@@ -109,18 +108,10 @@ public class TileUpdateLogicService {
 			
 			Log.d(this.getClass().toString(), "Processing tile " + aiTile);
 			
-			// If this is the first time in the loop then we'll initialize the best tile found
-			if(bestAITile == null)
-			{
-				bestAITile = aiTile;
-			}
-			
-			// Update the direction of this tile
-			updateDirection(aiTile);
 			
 			// Update the colour of this tile and all adjacent tiles in the cloned TileStatus
 			// Effectively, we are simulating what will happen if this tile was updated
-			updateColours(aiTile, copyOfTileStatus, TileColour.RED, TileColour.GREEN, 0);
+			updateColoursAndDirection(aiTile, copyOfTileStatus, TileColour.RED, TileColour.GREEN, 0, true);
 			
 			// Retrieve the counts of the numbers of red and green tiles if this tile was updated
 			int numberOfAITilesAttained = copyOfTileStatus.getNumberOfTilesForColour(TileColour.RED);
@@ -129,49 +120,38 @@ public class TileUpdateLogicService {
 			Log.d(this.getClass().toString(), "Selecting this tile will result in " + numberOfAITilesAttained + " red tiles and " + numberOfExistingUserTiles
 			+ " green tiles");
 			
-			// If this is greater than the highest number to date then this becomes our best tile
-			// If it is equal then there is additional logic to be performed
-			if(numberOfAITilesAttained > highestNumberOfAITilesAttained)
+			if(numberOfExistingUserTiles < lowestNumberOfUserTilesExisting)
 			{
-				highestNumberOfAITilesAttained = numberOfAITilesAttained;
 				lowestNumberOfUserTilesExisting = numberOfExistingUserTiles;
-				Log.d(this.getClass().toString(), "This tile will result in more gains than the previous best AI tile " + bestAITile);
-				bestAITile = aiTile;
+				bestAITileForEnemyTilesGained = aiTile;
 			}
-			else if(numberOfAITilesAttained == highestNumberOfAITilesAttained)
-			{
-				// If two tiles attained the same number of tiles then we select the tile that attained more user tiles
-				if(numberOfExistingUserTiles < lowestNumberOfUserTilesExisting)
-				{
-					lowestNumberOfUserTilesExisting = numberOfExistingUserTiles;
-					Log.d(this.getClass().toString(), "This tile will result in the same number of gains than the previous best AI tile " + bestAITile);
-					Log.d(this.getClass().toString(), "However, it will result in more gains of user tiles");
-					bestAITile = aiTile;
-				}
+			if(numberOfAITilesAttained >= highestNumberOfAITilesAttained)
+			{ 
+				// If this is greater than the highest number to date then this becomes our best tile
+				// If it is equal then there is additional logic to be performed
+				highestNumberOfAITilesAttained = numberOfAITilesAttained;
+				bestAITileForTilesGained = aiTile;
 			}
 		}
-		
-		if(bestAITile != null)
+		if(bestAITileForEnemyTilesGained != null)
 		{
-			// Retrieve the actual tile information associated with this position as it will be updated after completion of the processing here
-			bestAITile = tileStatus.getTileInformation(bestAITile.getTilePosition());
-			Log.i(this.getClass().toString(), "Leaving calculateOptimumAITile. Optimum AI tile is " + bestAITile);
+			return tileStatus.getTileInformation(bestAITileForEnemyTilesGained.getTilePosition());
 		}
-		return bestAITile;		
-		
+		else
+		{
+			if(highestNumberOfAITilesAttained == tileStatus.getNumberOfTilesForColour(TileColour.RED))
+			{
+				TilePosition greenTileToTarget = tileStatus.getTilePositionForAIToTarget(TileColour.GREEN);
+				// Will search the entire grid for the tile closest to a green tile
+				return calculateOptimumAITile(tileStatus, Level.FIVE, new TilePositionComparator(greenTileToTarget));
+			}
+			else
+			{	
+				return tileStatus.getTileInformation(bestAITileForTilesGained.getTilePosition()); 
+			}
+		}		
 	}
 	
-	public void updateDirection(Tile tile)
-	{
-		int degrees = (int) tile.getDirection().getDegrees();
-		
-		// Add 90 to the number of degrees. If it's 270 then we are effectively adding 90 and resetting to 0 as it's 360
-		degrees = (degrees == 270) ? 0 : (degrees += 90);
-		
-		// Set it's new direction
-		tile.setDirection(TileDirection.getTileDirection(degrees));
-	}
-		
 	/**
 	 * Determines whether the specified TilePosition exists on the grid by checking its coordinates
 	 * @param tilePosition
@@ -184,12 +164,12 @@ public class TileUpdateLogicService {
 		|| (tilePosition.getPositionAcrossGrid() >= tileStatus.getGridWidth()) || (tilePosition.getPositionDownGrid() >= tileStatus.getGridHeight());
 	}
 	
-	private List<TilePosition> getAITilesToSearch(Set<TilePosition> aiTilePositions, Level currentLevel)
+	private List<TilePosition> getAITilesToSearch(Set<TilePosition> aiTilePositions, Level currentLevel, Comparator<TilePosition> comparator)
 	{
 		Log.d(this.getClass().toString(), "Entering getAITilesToSearch for level " + currentLevel);
 		// Convert this set to a sorted array list for easy access
 		List<TilePosition> aiTilesToSearch = new ArrayList<TilePosition>(aiTilePositions);
-		Collections.sort(aiTilesToSearch);
+		Collections.sort(aiTilesToSearch, comparator);
 		// Receive the number that we can search for this level. 
 		int numberToSearch = currentLevel.getNumberToSearch();
 		Log.d(this.getClass().toString(), "Number to search is " + numberToSearch);

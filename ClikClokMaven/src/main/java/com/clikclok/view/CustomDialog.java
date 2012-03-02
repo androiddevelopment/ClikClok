@@ -1,4 +1,4 @@
-package com.clikclok.util;
+package com.clikclok.view;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.clikclok.R;
+import com.clikclok.util.UIUtilities;
 
 public class CustomDialog extends Dialog {
 	
@@ -50,11 +51,13 @@ public class CustomDialog extends Dialog {
 		dialogText.setText(new String(dialogString));
 		leftButton.setText(new String(leftButtonText));
 		leftButton.setOnClickListener(leftButtonClickListener);
+//		leftButton.setOnTouchListener(new ButtonTouchedListener(leftButtonClickListener));
 				
 		if(rightButtonText != null && rightButtonText.length() >= 0)
 		{
 			rightButton.setText(new String(rightButtonText));
 			rightButton.setOnClickListener(rightButtonClickListener);
+//			rightButton.setOnTouchListener(new ButtonTouchedListener(rightButtonClickListener));
 		}
 		else
 		{
@@ -103,4 +106,20 @@ public class CustomDialog extends Dialog {
 			return dialog;
 		}			
 	}
+	
+//	private class ButtonTouchedListener implements View.OnTouchListener {
+//		private View.OnClickListener clickListener;
+//		
+//		public ButtonTouchedListener(View.OnClickListener clickListener) {
+//			this.clickListener = clickListener;
+//		}
+//		
+//		@Override
+//		public boolean onTouch(View view, MotionEvent event) {
+//			view.setBackgroundResource(R.layout.dialog_button_ontouched_background);
+//			clickListener.onClick(view);
+//			return true;
+//		}
+//		
+//	}
 }

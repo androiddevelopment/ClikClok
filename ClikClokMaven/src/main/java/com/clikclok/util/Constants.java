@@ -9,9 +9,10 @@ public class Constants {
 	public static final int AI_WINNER_DIALOG = 3;
 	public static final int INTRODUCTION_DIALOG = 4;
 	public static final int RULES_DIALOG = 5;
+	public static final int EXIT_DIALOG = 6;
 	public static final int TILE_WIDTH = 70;
 	public static final int USER_PAUSE_TIME = 350;
 	public static final int AI_SELECTION_PAUSE_TIME = 650;
 	public static final int AI_PAUSE_TIME = 600;
-	public static final int ENEMY_GAINS_THRESHOLD = 5;
+	public static final int ENEMY_GAINS_THRESHOLD = GRID_HEIGHT * GRID_WIDTH / 3;
 }

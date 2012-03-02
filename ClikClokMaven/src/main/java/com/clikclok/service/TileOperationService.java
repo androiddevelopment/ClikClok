@@ -35,7 +35,7 @@ public class TileOperationService{
 			// Stop the timer if it is active
 			gameLogicService.stopTimer();
 		}
-		uiOperationQueue.addTaskToQueue(new GridUpdateTask(gameLogicService) {
+		uiOperationQueue.addGridUpdateTaskToQueue(new GridUpdateTask(gameLogicService) {
 				@Override
 				public void run() {
 					Log.d(this.getClass().toString(), "Performing user operation on " + clickedTile);
@@ -59,22 +59,21 @@ public class TileOperationService{
 			return;
 		}
 		
-		uiOperationQueue.addTaskToQueue(new GridUpdateTask(gameLogicService) {
+		uiOperationQueue.addGridUpdateTaskToQueue(new GridUpdateTask(gameLogicService) {
 			@Override
 			public void run() {
 				// After this, determine the optimum AI tile to select
 				aiTile = tileUpdateLogicService.calculateOptimumAITile(gameLogicService.getGameState(), gameLogicService.getCurrentLevel());
 				Log.i(this.getClass().toString(), "Optimum tile calculated for AI is " + aiTile);
 				// Flash the red light so user knows the selected tile
-				aiTile.setColour(TileColour.RED_TURNING);
-				gameLogicService.getGameState().updateTile(aiTile);
+				gameLogicService.getGameState().updateTileColour(aiTile, TileColour.RED_TURNING);
 				// False is just set as default here
 				refreshGridForOperationType(OperationType.AI_SELECTION_OPERATION, false);
 				operationCounter--;
 			}
 		});
 		operationCounter++;
-		uiOperationQueue.addTaskToQueue(new GridUpdateTask(gameLogicService) {
+		uiOperationQueue.addGridUpdateTaskToQueue(new GridUpdateTask(gameLogicService) {
 			@Override
 			public void run() {
 				Log.d(this.getClass().toString(), "Performing AI operation on " + aiTile);
@@ -89,12 +88,8 @@ public class TileOperationService{
 	
 	private boolean performOperation(Tile tile, TileColour colourOfTile, TileColour otherColour)
 	{
-		// Update the direction of the AI's tile
-		tileUpdateLogicService.updateDirection(tile);
-		// Then update its colour and all adjacent tiles colours
-		
 		Log.d(this.getClass().toString(), "About to update colours for a tile");		
-		int enemyTilesGained = tileUpdateLogicService.updateColours(tile, gameLogicService.getGameState(), colourOfTile, otherColour, 0);	
+		int enemyTilesGained = tileUpdateLogicService.updateColoursAndDirection(tile, gameLogicService.getGameState(), colourOfTile, otherColour, 0, true);	
 		return enemyTilesGained > Constants.ENEMY_GAINS_THRESHOLD;
 	}
 	

@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.clikclok.util.Constants;
 
-public class TilePosition implements Comparable<TilePosition>{
+public class TilePosition {
 	private int positionAcrossGrid;
 	private int positionDownGrid;
 		
@@ -91,43 +91,5 @@ public class TilePosition implements Comparable<TilePosition>{
 		if (positionDownGrid != other.positionDownGrid)
 			return false;
 		return true;
-	}
-
-	@Override
-	public int compareTo(TilePosition other) {
-		
-		if(this.equals(other))
-		{
-			return 0;
-		}
-		else if(this.equals(new TilePosition(other.positionDownGrid, other.positionAcrossGrid)))
-		{
-			// If this position's x coordinate coordinate matches the other's y coordinate
-			// and the y coordinate matches the other's x coordinate
-			// then the formula below will return the same result even though they are different positions
-			// Therefore we will simply add this beside it 
-			return 1;
-		}
-		else
-		{
-			double comparison = calculateDistanceFromTopLeft(this) - calculateDistanceFromTopLeft(other);		
-			Log.v(this.getClass().toString(), "Comparison between this TilePosition " + this + " and " + other + " is " + comparison);
-			// Round off these values as we do not want them to be cast to zero
-			comparison = (0 > comparison && comparison > -1) ? -1 : comparison;
-			comparison = (0 < comparison && comparison < 1) ? 1 : comparison;
-			return (int)comparison;
-		}
-	}
-	
-	private double calculateDistanceFromTopLeft(TilePosition tilePosition)
-	{
-		int xCoordinate = tilePosition.getPositionAcrossGrid();
-		int yCoordinate = tilePosition.getPositionDownGrid();
-		
-		double distanceFromTopLeft = Math.sqrt((xCoordinate * xCoordinate) + (yCoordinate * yCoordinate));
-		
-		return distanceFromTopLeft;
-	}
-	
-	
+	}	
 }

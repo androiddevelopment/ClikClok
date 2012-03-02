@@ -44,17 +44,18 @@ public class GameLogicService {
 		Log.d(this.getClass().toString(), "Entering updateGrid. Next operation is user operation? " + operationType.isUserOperationNext());
 		
 		// Perform the update operation from non UI thread
-		updateUIListener.updateGrid(gameState.getNumberOfTilesForColour(TileColour.GREEN), gameState.getNumberOfTilesForColour(TileColour.RED) + gameState.getNumberOfTilesForColour(TileColour.RED_TURNING));				
+		updateUIListener.updateGrid(gameState.getNumberOfTilesForColour(TileColour.GREEN), gameState.getNumberOfTilesForColour(TileColour.RED) + gameState.getNumberOfTilesForColour(TileColour.RED_TURNING)
+				, uiOperationQueue);				
 				
 		// Sleeping for a fraction of a second is the only way we can ensure that the above update is performed immediately by the UI thread
-		try
-		{
-			Thread.sleep(operationType.getMillisecondsToPauseFor());
-		}
-		catch (InterruptedException e)
-		{
-			Log.e(this.getClass().toString(), "InterruptedException thrown:" + e.getMessage());
-		}
+//		try
+//		{
+//			Thread.sleep(operationType.getMillisecondsToPauseFor());
+//		}
+//		catch (InterruptedException e)
+//		{
+//			Log.e(this.getClass().toString(), "InterruptedException thrown:" + e.getMessage());
+//		}
 		soundsService.playMoveSound(operationType, enemyTilesGained);
 		
 		// Need to check for both, as when the first red turns there will be no reds at that point

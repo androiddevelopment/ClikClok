@@ -1,5 +1,6 @@
 package com.clikclok.domain;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -56,65 +57,59 @@ public class GameState {
 	
 	public Tile getTileInformation(TilePosition tilePosition)
 	{
-		Tile actualTile = tiles[tilePosition.getPositionAcrossGrid()][tilePosition.getPositionDownGrid()];
-		return new Tile(actualTile.getDirection(), actualTile.getColour(), actualTile.getTilePosition());
+		return tiles[tilePosition.getPositionAcrossGrid()][tilePosition.getPositionDownGrid()];
 	}
 	
-	public void updateTile(Tile proxyTile) 
+	public void updateTileColourAndDirection(Tile tile, TileColour tileColour) {
+		updateDirection(tile);
+		updateTileColour(tile, tileColour);
+	}
+	
+	/**
+	 * This is only used for unit tests
+	 * @param tile
+	 * @param tileColour
+	 */
+	public void updateTileColourAndDirection(Tile tile, TileColour tileColour, TileDirection tileDirection) {
+		tile.setDirection(tileDirection);
+		updateTileColour(tile, tileColour);
+	}
+	
+	public void updateTileColour(Tile tile, TileColour tileColour) 
 	{
-		Log.d(this.getClass().toString(), "Entering updateTile for tile " + proxyTile);
+		TileColour colourBefore = tile.getColour();	
 		
-		Tile actualTile = tiles[proxyTile.getTilePosition().getPositionAcrossGrid()][proxyTile.getTilePosition().getPositionDownGrid()];
+		tile.setColour(tileColour);
 		
-		Log.d(this.getClass().toString(), "Tile currently in this position that we are going to replace is " + actualTile);
-		
-		TileColour colourBefore = actualTile.getColour();
-		TileColour colourAfter = proxyTile.getColour();
-		
-		if(!colourBefore.equals(colourAfter))
+		if(!colourBefore.equals(tileColour))
 		{
-			Log.d(this.getClass().toString(), "Colours are different between the two so we will update the position sets");
-			
 			Set<TilePosition> positionOfColoursBefore = tilesWithColours.get(colourBefore);
 			
 			//Intialize this to an empty Set to avoid NullPointerExceptions below
 			positionOfColoursBefore = (positionOfColoursBefore == null) ? new HashSet<TilePosition>() : positionOfColoursBefore;
 			
-			Log.d(this.getClass().toString(), "Number of positions that exist for " + colourBefore + " are " + positionOfColoursBefore.size());
-			
 			if(positionOfColoursBefore.size() > 0)
 			{
-				positionOfColoursBefore.remove(actualTile.getTilePosition());
-				Log.d(this.getClass().toString(), "After removal of " + actualTile + " there now exists " + positionOfColoursBefore.size() + " tiles with colour " + colourBefore);
+				positionOfColoursBefore.remove(tile.getTilePosition());
+				Log.d(this.getClass().toString(), "After removal of " + tile + " there now exists " + positionOfColoursBefore.size() + " tiles with colour " + colourBefore);
 			}
-			Set<TilePosition> positionOfColoursAfter = tilesWithColours.get(colourAfter);
-			boolean positionAdded = positionOfColoursAfter.add(proxyTile.getTilePosition());
-			Log.v(this.getClass().toString(), proxyTile.getTilePosition() + " was added successfully? " + positionAdded);
-			Log.d(this.getClass().toString(), "There now exists " + positionOfColoursAfter.size() + " tiles with colour " + colourAfter);
-			Log.v(this.getClass().toString(), "These are " + positionOfColoursAfter);
-		}
-		
-		actualTile.setColour(colourAfter);
-		actualTile.setDirection(proxyTile.getDirection());	
-					
+			Set<TilePosition> positionOfColoursAfter = tilesWithColours.get(tileColour);
+			positionOfColoursAfter.add(tile.getTilePosition());
+		}					
 	}
 
 	public Set<TilePosition> getTilePositionsForColour(TileColour tileColour)
 	{
-		Log.d(this.getClass().toString(), "Entering getTilePositionsForColour for colour " + tileColour);
+		return tilesWithColours.get(tileColour); 
+	}
+	
+	public TilePosition getTilePositionForAIToTarget(TileColour tileColour) {
 		
-		Set<TilePosition> actualTilePositions = tilesWithColours.get(tileColour);
+		Set<TilePosition> tilePositions = getTilePositionsForColour(tileColour);
 		
-		Set<TilePosition> proxyTilePositions = new HashSet<TilePosition>();
+		int randomNumber = (int) (Math.random() * tilePositions.size());
 		
-		for(TilePosition tilePosition : actualTilePositions)
-		{
-			TilePosition proxyTilePosition = new TilePosition(tilePosition.getPositionAcrossGrid(), tilePosition.getPositionDownGrid());
-			proxyTilePositions.add(proxyTilePosition);
-		}
-		
-		Log.v(this.getClass().toString(), "Returning ordered set containing " + proxyTilePositions);
-		return proxyTilePositions;
+		return new ArrayList<TilePosition>(tilePositions).get(randomNumber);
 	}
 	
 	/**
@@ -189,6 +184,17 @@ public class GameState {
 		initialRedTile.setColour(TileColour.RED);
     	
     	return tiles;
+	}
+	
+	private void updateDirection(Tile tile)
+	{
+		int degrees = (int) tile.getDirection().getDegrees();
+		
+		// Add 90 to the number of degrees. If it's 270 then we are effectively adding 90 and resetting to 0 as it's 360
+		degrees = (degrees == 270) ? 0 : (degrees += 90);
+		
+		// Set it's new direction
+		tile.setDirection(TileDirection.getTileDirection(degrees));
 	}
 
 }

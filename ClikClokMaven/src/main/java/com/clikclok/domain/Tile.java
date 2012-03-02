@@ -49,19 +49,19 @@ public class Tile {
 	public TilePosition getTilePosition() {
 		return tilePosition;
 	}
-	public void setTilePosition(TilePosition tilePosition) {
+	protected void setTilePosition(TilePosition tilePosition) {
 		this.tilePosition = tilePosition;
 	}
 	public TileDirection getDirection() {
 		return direction;
 	}
-	public void setDirection(TileDirection direction) {
+	protected void setDirection(TileDirection direction) {
 		this.direction = direction;
 	}
 	public TileColour getColour() {
 		return colour;
 	}
-	public void setColour(TileColour colour) {
+	protected void setColour(TileColour colour) {
 		this.colour = colour;
 	}
 	

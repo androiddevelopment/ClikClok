@@ -23,8 +23,6 @@ public class TileClickListener implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		
-		Log.i(this.getClass().toString(), "About to update grid for user's click on tile " + clickedTile);
-		
 		// We should not perform any operation for non-user tiles
 		if(!clickedTile.getColour().equals(TileColour.GREEN))
 		{

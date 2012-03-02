@@ -5,22 +5,24 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import com.clikclok.domain.Level;
+import com.clikclok.domain.TestUtilities;
 import com.clikclok.domain.Tile;
 import com.clikclok.domain.TileColour;
 import com.clikclok.domain.TileDirection;
 import com.clikclok.domain.TilePosition;
 import com.clikclok.domain.GameState;
+import com.clikclok.service.TilePositionComparator;
 import com.clikclok.service.TileUpdateLogicService;
 
 public class TileUpdateLogicServiceTest extends TestCase {
 	private TileUpdateLogicService tileUpdater;	
-	private GameState tileStatus;
+	private GameState gameState;
 	
 	@Override
 	protected void setUp() throws Exception {
 		tileUpdater = new TileUpdateLogicService();
-		tileStatus = new GameState(TestUtilities.initializeSmallTestTileGrid());
-		Level.setGridSize(tileStatus.getTileGridSize());
+		gameState = new GameState(TestUtilities.initializeSmallTestTileGrid());
+		Level.setGridSize(gameState.getTileGridSize());
 		super.setUp();
 	}
 
@@ -29,16 +31,16 @@ public class TileUpdateLogicServiceTest extends TestCase {
 	 */
 	public void testUpdateColours()
 	{
-		Tile tileUpdated = tileStatus.getTileInformation(new TilePosition(0, 0));
+		Tile tileUpdated = gameState.getTileInformation(new TilePosition(0, 0));
 		
-		tileUpdater.updateColours(tileUpdated, tileStatus, TileColour.GREEN, TileColour.RED, 0);	
+		tileUpdater.updateColoursAndDirection(tileUpdated, gameState, TileColour.GREEN, TileColour.RED, 0, false);	
 				
-		assertEquals(6, tileStatus.getNumberOfTilesForColour(TileColour.GREEN));
-		assertEquals(TileColour.GREEN, tileStatus.getTileInformation(new TilePosition(1, 0)).getColour());
-		assertEquals(TileColour.GREEN, tileStatus.getTileInformation(new TilePosition(2, 0)).getColour());
-		assertEquals(TileColour.GREEN, tileStatus.getTileInformation(new TilePosition(2, 1)).getColour());
-		assertEquals(TileColour.GREEN, tileStatus.getTileInformation(new TilePosition(1, 1)).getColour());
-		assertEquals(TileColour.GREEN, tileStatus.getTileInformation(new TilePosition(3, 1)).getColour());
+		assertEquals(6, gameState.getNumberOfTilesForColour(TileColour.GREEN));
+		assertEquals(TileColour.GREEN, gameState.getTileInformation(new TilePosition(1, 0)).getColour());
+		assertEquals(TileColour.GREEN, gameState.getTileInformation(new TilePosition(2, 0)).getColour());
+		assertEquals(TileColour.GREEN, gameState.getTileInformation(new TilePosition(2, 1)).getColour());
+		assertEquals(TileColour.GREEN, gameState.getTileInformation(new TilePosition(1, 1)).getColour());
+		assertEquals(TileColour.GREEN, gameState.getTileInformation(new TilePosition(3, 1)).getColour());
 		
 	}
 	
@@ -47,24 +49,25 @@ public class TileUpdateLogicServiceTest extends TestCase {
 	 */
 	public void testOpposingColoursUpdated()
 	{
-		Tile tileOne = tileStatus.getTileInformation(new TilePosition(2,0));
-		tileOne.setColour(TileColour.RED);
-		tileStatus.updateTile(tileOne);
-		Tile tileTwo = tileStatus.getTileInformation(new TilePosition(1,1));
-		tileTwo.setColour(TileColour.RED);
-		tileStatus.updateTile(tileTwo);
-		Tile tileUpdated = tileStatus.getTileInformation(new TilePosition(0,0));
+		Tile tileOne = gameState.getTileInformation(new TilePosition(2,0));
+		gameState.updateTileColour(tileOne, TileColour.RED);
+		Tile tileTwo = gameState.getTileInformation(new TilePosition(1,1));
+		gameState.updateTileColour(tileTwo, TileColour.RED);
+		Tile tileUpdated = gameState.getTileInformation(new TilePosition(0,0));
 		
-		tileUpdater.updateColours(tileUpdated, tileStatus, TileColour.GREEN, TileColour.RED, 0);	
+		int enemyTilesGained = tileUpdater.updateColoursAndDirection(tileUpdated, gameState, TileColour.GREEN, TileColour.RED, 0, false);	
 		
-		Set<TilePosition> greenPositions = tileStatus.getTilePositionsForColour(TileColour.GREEN);
+		Set<TilePosition> greenPositions = gameState.getTilePositionsForColour(TileColour.GREEN);
 		
 		assertEquals(6, greenPositions.size());
-		assertEquals(TileColour.GREEN, tileStatus.getTileInformation(new TilePosition(1,0)).getColour());
-		assertEquals(TileColour.GREEN, tileStatus.getTileInformation(new TilePosition(2,0)).getColour());
-		assertEquals(TileColour.GREEN, tileStatus.getTileInformation(new TilePosition(2,1)).getColour());
-		assertEquals(TileColour.GREEN, tileStatus.getTileInformation(new TilePosition(1,1)).getColour());
-		assertEquals(TileColour.GREEN, tileStatus.getTileInformation(new TilePosition(3, 1)).getColour());
+		assertEquals(TileColour.GREEN, gameState.getTileInformation(new TilePosition(1,0)).getColour());
+		assertEquals(TileColour.GREEN, gameState.getTileInformation(new TilePosition(2,0)).getColour());
+		assertEquals(TileColour.GREEN, gameState.getTileInformation(new TilePosition(2,1)).getColour());
+		assertEquals(TileColour.GREEN, gameState.getTileInformation(new TilePosition(1,1)).getColour());
+		assertEquals(TileColour.GREEN, gameState.getTileInformation(new TilePosition(3,1)).getColour());
+		assertEquals(2, enemyTilesGained);
+		
+		
 	}
 	
 	/**
@@ -72,18 +75,17 @@ public class TileUpdateLogicServiceTest extends TestCase {
 	 */
 	public void testNonExistingTilesNotUpdated()
 	{
-		Tile tile = tileStatus.getTileInformation(new TilePosition(2,0));
-		tile.setDirection(TileDirection.NORTH);
-		tileStatus.updateTile(tile);
-		Tile tileUpdated = tileStatus.getTileInformation(new TilePosition(0,0));
+		Tile tile = gameState.getTileInformation(new TilePosition(2,0));
+		gameState.updateTileColourAndDirection(tile, tile.getColour(), TileDirection.NORTH);
+		Tile tileUpdated = gameState.getTileInformation(new TilePosition(0,0));
 		
-		tileUpdater.updateColours(tileUpdated, tileStatus, TileColour.GREEN, TileColour.RED, 0);	
+		tileUpdater.updateColoursAndDirection(tileUpdated, gameState, TileColour.GREEN, TileColour.RED, 0, false);	
 		
-		Set<TilePosition> greenPositions = tileStatus.getTilePositionsForColour(TileColour.GREEN);
+		Set<TilePosition> greenPositions = gameState.getTilePositionsForColour(TileColour.GREEN);
 		
 		assertEquals(3, greenPositions.size());
-		assertEquals(TileColour.GREEN, tileStatus.getTileInformation(new TilePosition(1,0)).getColour());
-		assertEquals(TileColour.GREEN, tileStatus.getTileInformation(new TilePosition(2,0)).getColour());
+		assertEquals(TileColour.GREEN, gameState.getTileInformation(new TilePosition(1,0)).getColour());
+		assertEquals(TileColour.GREEN, gameState.getTileInformation(new TilePosition(2,0)).getColour());
 	}
 	
 	/**
@@ -92,14 +94,12 @@ public class TileUpdateLogicServiceTest extends TestCase {
 	 */
 	public void testCalculateOptimumAITile()
 	{
-		Tile tileOne = tileStatus.getTileInformation(new TilePosition(3,0));
-		tileOne.setColour(TileColour.RED);
-		tileStatus.updateTile(tileOne);
-		Tile tileTwo = tileStatus.getTileInformation(new TilePosition(1,1));
-		tileTwo.setColour(TileColour.RED);
-		tileStatus.updateTile(tileTwo);
+		Tile tileOne = gameState.getTileInformation(new TilePosition(3,0));
+		gameState.updateTileColour(tileOne, TileColour.RED);
+		Tile tileTwo = gameState.getTileInformation(new TilePosition(1,1));
+		gameState.updateTileColour(tileTwo, TileColour.RED);
 
-		Tile optimumAITile = tileUpdater.calculateOptimumAITile(tileStatus, Level.FIVE);
+		Tile optimumAITile = tileUpdater.calculateOptimumAITile(gameState, Level.FIVE, new TilePositionComparator());
 		
 		// tileTwo should update 10 adjacent tiles compared to tileOne's 7
 		assertEquals(tileTwo, optimumAITile);
@@ -107,24 +107,35 @@ public class TileUpdateLogicServiceTest extends TestCase {
 	
 	public void testCalculateOptimumAITileWithOppositionColours()
 	{
-		Tile tileOne = tileStatus.getTileInformation(new TilePosition(1,0));
-		tileOne.setColour(TileColour.RED);
-		tileStatus.updateTile(tileOne);
-		Tile tileTwo = tileStatus.getTileInformation(new TilePosition(2,3));
-		tileTwo.setColour(TileColour.RED);
-		tileStatus.updateTile(tileTwo);
-		Tile tileThree = tileStatus.getTileInformation(new TilePosition(2,1));
-		tileThree.setColour(TileColour.GREEN);
-		tileStatus.updateTile(tileThree);
+		Tile tileOne = gameState.getTileInformation(new TilePosition(1,0));
+		gameState.updateTileColour(tileOne, TileColour.RED);
+		Tile tileTwo = gameState.getTileInformation(new TilePosition(2,3));
+		gameState.updateTileColour(tileTwo, TileColour.RED);
+		Tile tileThree = gameState.getTileInformation(new TilePosition(2,1));
+		gameState.updateTileColour(tileThree, TileColour.GREEN);
 		// Change this tile's direction to ensure that (1,0) and (2,3) both result in 7 red tiles
-		Tile tileFour = tileStatus.getTileInformation(new TilePosition(0, 1));
-		tileFour.setDirection(TileDirection.WEST);
-		tileStatus.updateTile(tileFour);
+		Tile tileFour = gameState.getTileInformation(new TilePosition(0, 1));
+		gameState.updateTileColourAndDirection(tileFour, tileFour.getColour(), TileDirection.WEST);
 		
-		Tile optimumAITile = tileUpdater.calculateOptimumAITile(tileStatus, Level.FIVE);
+		Tile optimumAITile = tileUpdater.calculateOptimumAITile(gameState, Level.FIVE, new TilePositionComparator());
 		
 		// Both tiles being updated result in a total of 7 tiles. However, (1,0) updated a green tile
 		assertEquals(tileOne, optimumAITile);
 	}
-		
+	
+	public void testCalculateOptimumAITileWithLessNumberOfOppositionColoursThanGreyColours() {
+		gameState = new GameState(TestUtilities.initializeSmallTestTileGridPredominantlyRed());
+		Tile tileZeroOne = gameState.getTileInformation(new TilePosition(0, 1));
+		Tile optimumAITile = tileUpdater.calculateOptimumAITile(gameState, Level.FIVE, new TilePositionComparator());
+		assertEquals(tileZeroOne, optimumAITile);
+	}
+	
+	public void testCalculateOptimumAITileWithTopLeftOccupied() {
+		gameState = new GameState(TestUtilities.initializeSmallTestTileGridWithTopLeftOccupied());
+		Tile tileTwoThree = gameState.getTileInformation(new TilePosition(2, 3));
+		Tile tileThreeTwo = gameState.getTileInformation(new TilePosition(3, 2));
+		Tile optimumAITile = tileUpdater.calculateOptimumAITile(gameState, Level.ONE, new TilePositionComparator());
+		assertTrue(optimumAITile.equals(tileTwoThree) || optimumAITile.equals(tileThreeTwo));
+	}
+	
 }
