@@ -82,10 +82,10 @@ public class TileUpdateLogicService {
 	
 	public Tile calculateOptimumAITile(GameState tileStatus, Level currentLevel)
 	{
-		return calculateOptimumAITile(tileStatus, currentLevel, tilePositionComparator);
+		return calculateOptimumAITile(tileStatus, currentLevel, tilePositionComparator, false);
 	}
 	
-	public Tile calculateOptimumAITile(GameState tileStatus, Level currentLevel, Comparator<TilePosition> tilePositionComparator)
+	public Tile calculateOptimumAITile(GameState tileStatus, Level currentLevel, Comparator<TilePosition> tilePositionComparator, boolean performedRetry)
 	{
 		int highestNumberOfAITilesAttained = 0;
 		// User will never have more tiles than the grid size
@@ -139,16 +139,15 @@ public class TileUpdateLogicService {
 		}
 		else
 		{
-			if(highestNumberOfAITilesAttained == tileStatus.getNumberOfTilesForColour(TileColour.RED))
+			if(highestNumberOfAITilesAttained == tileStatus.getNumberOfTilesForColour(TileColour.RED) && !performedRetry)
 			{
 				TilePosition greenTileToTarget = tileStatus.getTilePositionForAIToTarget(TileColour.GREEN);
 				// Will search the entire grid for the tile closest to a green tile
-				return calculateOptimumAITile(tileStatus, Level.FIVE, new TilePositionComparator(greenTileToTarget));
+				return calculateOptimumAITile(tileStatus, Level.FIVE, new TilePositionComparator(greenTileToTarget), true);
 			}
-			else
-			{	
-				return tileStatus.getTileInformation(bestAITileForTilesGained.getTilePosition()); 
-			}
+			
+			return tileStatus.getTileInformation(bestAITileForTilesGained.getTilePosition()); 
+			
 		}		
 	}
 	

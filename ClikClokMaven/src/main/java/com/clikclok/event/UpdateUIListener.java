@@ -1,12 +1,12 @@
 package com.clikclok.event;
 
 import com.clikclok.domain.Level;
-import com.clikclok.service.GamePauseAndResumeService;
+import com.clikclok.domain.OperationType;
 
 
 public interface UpdateUIListener {
 	
-	public abstract void updateGrid(final int userScore, final int aiScore, final GamePauseAndResumeService pauseAndResumeService);
+	public abstract void updateGrid(final int userScore, final int aiScore, final boolean userHasWon, final OperationType operationType);
 	
 	public abstract void showNextLevelDialog(Level currentLevel);
 	

@@ -35,7 +35,7 @@ public class TileOperationService{
 			// Stop the timer if it is active
 			gameLogicService.stopTimer();
 		}
-		uiOperationQueue.addGridUpdateTaskToQueue(new GridUpdateTask(gameLogicService) {
+		uiOperationQueue.addTaskToQueue(new GridUpdateTask(gameLogicService) {
 				@Override
 				public void run() {
 					Log.d(this.getClass().toString(), "Performing user operation on " + clickedTile);
@@ -59,13 +59,17 @@ public class TileOperationService{
 			return;
 		}
 		
-		uiOperationQueue.addGridUpdateTaskToQueue(new GridUpdateTask(gameLogicService) {
+		uiOperationQueue.addAIGridUpdateTaskToQueue(new GridUpdateTask(gameLogicService) {
 			@Override
 			public void run() {
 				// After this, determine the optimum AI tile to select
 				aiTile = tileUpdateLogicService.calculateOptimumAITile(gameLogicService.getGameState(), gameLogicService.getCurrentLevel());
-				Log.i(this.getClass().toString(), "Optimum tile calculated for AI is " + aiTile);
-				// Flash the red light so user knows the selected tile
+				uiOperationQueue.aiCalculationComplete();
+			}
+		});
+		uiOperationQueue.addAIGridUpdateTaskToQueue(new GridUpdateTask(gameLogicService) {
+			@Override
+			public void run() {
 				gameLogicService.getGameState().updateTileColour(aiTile, TileColour.RED_TURNING);
 				// False is just set as default here
 				refreshGridForOperationType(OperationType.AI_SELECTION_OPERATION, false);
@@ -73,7 +77,7 @@ public class TileOperationService{
 			}
 		});
 		operationCounter++;
-		uiOperationQueue.addGridUpdateTaskToQueue(new GridUpdateTask(gameLogicService) {
+		uiOperationQueue.addAIGridUpdateTaskToQueue(new GridUpdateTask(gameLogicService) {
 			@Override
 			public void run() {
 				Log.d(this.getClass().toString(), "Performing AI operation on " + aiTile);

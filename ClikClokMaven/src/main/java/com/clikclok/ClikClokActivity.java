@@ -17,10 +17,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.clikclok.domain.Level;
+import com.clikclok.domain.OperationType;
 import com.clikclok.event.EnableSoundsListener;
 import com.clikclok.event.UpdateUIListener;
 import com.clikclok.service.GameLogicService;
-import com.clikclok.service.GamePauseAndResumeService;
 import com.clikclok.service.TileOperationService;
 import com.clikclok.service.UIOperationQueue;
 import com.clikclok.service.domain.GameResumeTask;
@@ -111,7 +111,8 @@ public class ClikClokActivity extends RoboActivity implements UpdateUIListener {
 							// Need to find a better way to inject this
 							tileAdapter.setGameState(gameLogicService
 									.getGameState());
-							updateGrid(0, 0, null);
+							updateGrid(0, 0, false, OperationType.AI_OPERATION);
+							dismissDialog(Constants.LEVEL_COMPLETE_DIALOG);
 						}
 					});
 			dialog = builder.create();
@@ -208,8 +209,10 @@ public class ClikClokActivity extends RoboActivity implements UpdateUIListener {
 	}
 
 	@Override
-	public void updateGrid(final int userScore, final int aiScore, final GamePauseAndResumeService pauseAndResumeService) {
-		
+	public void updateGrid(final int userScore, final int aiScore, final boolean userHasWon, final OperationType operationType) {
+		if(operationType.equals(OperationType.USER_OPERATION)) {
+			uiOperationQueue.startNextTask();
+		}
 		// This is added to the Handler's queue to ensure that refreshes are
 		// performed in the order that they are invoked.
 		handler.post(new Runnable() {
@@ -217,7 +220,7 @@ public class ClikClokActivity extends RoboActivity implements UpdateUIListener {
 			public void run() {
 				tileAdapter.notifyDataSetChanged();
 				// Prefix these with empty String to ensure autoboxing occurs
-				gridView.post(new GameResumeTask(pauseAndResumeService));
+				gridView.post(new GameResumeTask(uiOperationQueue, userHasWon, operationType));
 				setScores(userScore, aiScore);
 			}
 		});

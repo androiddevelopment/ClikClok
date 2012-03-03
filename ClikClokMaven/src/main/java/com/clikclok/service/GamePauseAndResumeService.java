@@ -1,5 +1,9 @@
 package com.clikclok.service;
 
 public interface GamePauseAndResumeService {
-	public void resumeQueuedTasks();
+	public void startNextTask();
+	
+	public void aiCalculationComplete();
+	
+	public void usersGridViewUpdateComplete();
 }
