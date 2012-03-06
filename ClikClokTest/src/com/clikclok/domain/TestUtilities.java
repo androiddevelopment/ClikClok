@@ -87,26 +87,66 @@ public class TestUtilities {
 			}
 		}
 		
-		tiles[0][0].setDirection(TileDirection.EAST);
-		tiles[0][1].setDirection(TileDirection.SOUTH);
-		tiles[0][2].setDirection(TileDirection.EAST);
-		tiles[0][3].setDirection(TileDirection.NORTH);
+		tiles[0][0].setDirection(TileDirection.WEST);
+		tiles[0][1].setDirection(TileDirection.WEST);
+		tiles[0][2].setDirection(TileDirection.WEST);
+		tiles[0][3].setDirection(TileDirection.WEST);
 		
-		tiles[1][0].setDirection(TileDirection.EAST);
-		tiles[1][1].setDirection(TileDirection.EAST);
-		tiles[1][2].setDirection(TileDirection.WEST);
-		tiles[1][3].setDirection(TileDirection.EAST);
+		tiles[1][0].setDirection(TileDirection.SOUTH);
+		tiles[1][1].setDirection(TileDirection.SOUTH);
+		tiles[1][2].setDirection(TileDirection.SOUTH);
+		tiles[1][3].setDirection(TileDirection.SOUTH);
 		
 		tiles[2][0].setDirection(TileDirection.SOUTH);
-		tiles[2][1].setDirection(TileDirection.WEST);
-		tiles[2][2].setDirection(TileDirection.EAST);
-		tiles[2][3].setDirection(TileDirection.WEST);
+		tiles[2][1].setDirection(TileDirection.SOUTH);
+		tiles[2][2].setDirection(TileDirection.SOUTH);
+		tiles[2][3].setDirection(TileDirection.SOUTH);
 		
-		tiles[3][0].setDirection(TileDirection.EAST);
-		tiles[3][1].setDirection(TileDirection.WEST);
-		tiles[3][2].setDirection(TileDirection.WEST);
-		tiles[3][3].setDirection(TileDirection.SOUTH);
+		tiles[3][0].setDirection(TileDirection.NORTH);
+		tiles[3][1].setDirection(TileDirection.NORTH);
+		tiles[3][2].setDirection(TileDirection.NORTH);
+		tiles[3][3].setDirection(TileDirection.NORTH);
 		tiles[3][3].setColour(TileColour.GREEN);
+		
+		return tiles;
+	}
+	
+	public static Tile[][] initializeSmallTestTileGridWithGreenTileInTopLeft()
+	{
+		Tile[][] tiles = new Tile[4][4];
+		
+		for(int i = 0; i < 4; i++)
+		{
+			for(int j = 0; j < 4; j++)
+			{
+				tiles[i][j] = new Tile(null, TileColour.GREEN, new TilePosition(i,j));
+			}
+		}
+		
+		tiles[0][0].setDirection(TileDirection.WEST);
+		tiles[0][0].setColour(TileColour.GREEN);
+		tiles[0][1].setDirection(TileDirection.WEST);
+		tiles[0][2].setDirection(TileDirection.WEST);
+		tiles[0][3].setDirection(TileDirection.WEST);
+		
+		tiles[1][0].setDirection(TileDirection.SOUTH);
+		tiles[1][1].setDirection(TileDirection.SOUTH);
+		tiles[1][2].setDirection(TileDirection.SOUTH);
+		tiles[1][3].setDirection(TileDirection.SOUTH);
+		
+		tiles[2][0].setDirection(TileDirection.SOUTH);
+		tiles[2][1].setDirection(TileDirection.SOUTH);
+		tiles[2][2].setDirection(TileDirection.EAST);
+		tiles[2][2].setColour(TileColour.RED);
+		tiles[2][3].setDirection(TileDirection.EAST);
+		tiles[2][3].setColour(TileColour.RED);
+		
+		tiles[3][0].setDirection(TileDirection.NORTH);
+		tiles[3][1].setDirection(TileDirection.NORTH);
+		tiles[3][2].setDirection(TileDirection.EAST);
+		tiles[3][2].setColour(TileColour.RED);
+		tiles[3][3].setDirection(TileDirection.EAST);
+		tiles[3][3].setColour(TileColour.RED);
 		
 		return tiles;
 	}

@@ -4,25 +4,23 @@ import com.clikclok.R;
 import com.clikclok.util.Constants;
 
 public enum OperationType {
-	USER_OPERATION(Constants.USER_PAUSE_TIME, false, R.raw.user_move, R.raw.user_gains_made),
-	AI_SELECTION_OPERATION(Constants.AI_SELECTION_PAUSE_TIME, false),
-	AI_OPERATION(Constants.AI_PAUSE_TIME, true, R.raw.random_sound_2, R.raw.ai_gains_made);
+	USER_OPERATION(Constants.USER_PAUSE_TIME, R.raw.user_move, R.raw.user_gains_made),
+	AI_SELECTION_OPERATION(Constants.AI_SELECTION_PAUSE_TIME),
+	AI_OPERATION(Constants.AI_PAUSE_TIME, R.raw.random_sound_2, R.raw.ai_gains_made);
 	
 	private int millisecondsToPauseFor;
-	private boolean userOperationNext;
 	private int moveSoundResource;
 	private int enemyTilesGainedSoundResource;	
 	
-	private OperationType(int millisecondsToPauseFor, boolean userOperationNext, int moveSoundResource, int enemyTilesGainedSoundResource) {
+	private OperationType(int millisecondsToPauseFor, int moveSoundResource, int enemyTilesGainedSoundResource) {
 		this.millisecondsToPauseFor = millisecondsToPauseFor;
-		this.userOperationNext = userOperationNext;
 		this.moveSoundResource = moveSoundResource;
 		this.enemyTilesGainedSoundResource = enemyTilesGainedSoundResource;
 	}
 
-	private OperationType(int millisecondsToPauseFor, boolean userOperationNext)
+	private OperationType(int millisecondsToPauseFor)
 	{
-		this(millisecondsToPauseFor, userOperationNext, 0, 0);
+		this(millisecondsToPauseFor, 0, 0);
 	}
 	
 	public int getMillisecondsToPauseFor()
@@ -31,7 +29,7 @@ public enum OperationType {
 	}
 
 	public boolean isUserOperationNext() {
-		return userOperationNext;
+		return getNextOperationType().equals(OperationType.USER_OPERATION);
 	}
 
 	public int getMoveSoundResource() {
@@ -40,6 +38,19 @@ public enum OperationType {
 
 	public int getEnemyTilesGainedSoundResource() {
 		return enemyTilesGainedSoundResource;
+	}
+	
+	public OperationType getNextOperationType() {
+		OperationType nextOperationType = null;
+		switch(this) {
+			case USER_OPERATION: nextOperationType = OperationType.AI_SELECTION_OPERATION; 
+				break;
+			case AI_SELECTION_OPERATION: nextOperationType = OperationType.AI_OPERATION;
+				break;
+			case AI_OPERATION: nextOperationType = OperationType.USER_OPERATION;
+				break;
+		}
+		return nextOperationType;
 	}
 	
 }

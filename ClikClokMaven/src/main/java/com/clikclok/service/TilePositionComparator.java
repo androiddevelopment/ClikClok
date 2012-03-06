@@ -2,8 +2,6 @@ package com.clikclok.service;
 
 import java.util.Comparator;
 
-import android.util.Log;
-
 import com.clikclok.domain.TilePosition;
 import com.google.inject.Singleton;
 
@@ -36,7 +34,6 @@ public class TilePositionComparator implements Comparator<TilePosition> {
 		else
 		{
 			double comparison = calculateDistanceFromTargetTile(tileOne) - calculateDistanceFromTargetTile(tileTwo);		
-			Log.v(this.getClass().toString(), "Comparison between this TilePosition " + tileOne + " and " + tileTwo + " is " + comparison);
 			// Round off these values as we do not want them to be cast to zero
 			comparison = (0 > comparison && comparison > -1) ? -1 : comparison;
 			comparison = (0 < comparison && comparison < 1) ? 1 : comparison;

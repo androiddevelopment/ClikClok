@@ -18,7 +18,7 @@ public class EnableSoundsListener implements OnClickListener {
 
 	@Override
 	public void onClick(View view) {		
-		uiOperationQueue.addTaskToQueue(new Task() {			
+		uiOperationQueue.addUITaskToQueue(new Task() {			
 			@Override
 			public void run() {
 				gameLogicService.toggleSounds();				

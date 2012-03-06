@@ -1,6 +1,5 @@
 package com.clikclok.domain;
 
-import android.util.Log;
 
 public class Tile {
 	
@@ -79,15 +78,9 @@ public class Tile {
 	{	
 		TilePosition targetTilePosition = targetTile.getTilePosition();
 		
-		Log.v(this.getClass().toString(), "Target tile position is " + targetTilePosition);
-		
 		TilePosition adjacentTilePosition = tilePosition.getAdjacentTilePosition(direction);
 		
-		Log.v(this.getClass().toString(), "Actual tile this is facing is " + adjacentTilePosition);
-		
 		boolean isPointingTo = adjacentTilePosition.equals(targetTilePosition);
-		
-		Log.v(this.getClass().toString(), "Tiles touch? " + isPointingTo);
 		
 		return isPointingTo;
 	}
