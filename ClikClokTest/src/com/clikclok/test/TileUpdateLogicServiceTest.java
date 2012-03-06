@@ -99,7 +99,7 @@ public class TileUpdateLogicServiceTest extends TestCase {
 		Tile tileTwo = gameState.getTileInformation(new TilePosition(1,1));
 		gameState.updateTileColour(tileTwo, TileColour.RED);
 
-		Tile optimumAITile = tileUpdater.calculateOptimumAITile(gameState, Level.FIVE, new TilePositionComparator());
+		Tile optimumAITile = tileUpdater.calculateOptimumAITile(gameState, Level.FIVE, new TilePositionComparator(), false);
 		
 		// tileTwo should update 10 adjacent tiles compared to tileOne's 7
 		assertEquals(tileTwo, optimumAITile);
@@ -117,7 +117,7 @@ public class TileUpdateLogicServiceTest extends TestCase {
 		Tile tileFour = gameState.getTileInformation(new TilePosition(0, 1));
 		gameState.updateTileColourAndDirection(tileFour, tileFour.getColour(), TileDirection.WEST);
 		
-		Tile optimumAITile = tileUpdater.calculateOptimumAITile(gameState, Level.FIVE, new TilePositionComparator());
+		Tile optimumAITile = tileUpdater.calculateOptimumAITile(gameState, Level.FIVE, new TilePositionComparator(), false);
 		
 		// Both tiles being updated result in a total of 7 tiles. However, (1,0) updated a green tile
 		assertEquals(tileOne, optimumAITile);
@@ -126,7 +126,7 @@ public class TileUpdateLogicServiceTest extends TestCase {
 	public void testCalculateOptimumAITileWithLessNumberOfOppositionColoursThanGreyColours() {
 		gameState = new GameState(TestUtilities.initializeSmallTestTileGridPredominantlyRed());
 		Tile tileZeroOne = gameState.getTileInformation(new TilePosition(0, 1));
-		Tile optimumAITile = tileUpdater.calculateOptimumAITile(gameState, Level.FIVE, new TilePositionComparator());
+		Tile optimumAITile = tileUpdater.calculateOptimumAITile(gameState, Level.FIVE, new TilePositionComparator(), false);
 		assertEquals(tileZeroOne, optimumAITile);
 	}
 	
@@ -134,8 +134,15 @@ public class TileUpdateLogicServiceTest extends TestCase {
 		gameState = new GameState(TestUtilities.initializeSmallTestTileGridWithTopLeftOccupied());
 		Tile tileTwoThree = gameState.getTileInformation(new TilePosition(2, 3));
 		Tile tileThreeTwo = gameState.getTileInformation(new TilePosition(3, 2));
-		Tile optimumAITile = tileUpdater.calculateOptimumAITile(gameState, Level.ONE, new TilePositionComparator());
+		Tile optimumAITile = tileUpdater.calculateOptimumAITile(gameState, Level.ONE, new TilePositionComparator(), false);
 		assertTrue(optimumAITile.equals(tileTwoThree) || optimumAITile.equals(tileThreeTwo));
+	}
+	
+	public void testCalculateOptimumAITileWithGreenTileInTopLeft() {
+		gameState = new GameState(TestUtilities.initializeSmallTestTileGridWithGreenTileInTopLeft());
+		Tile tileTwoTwo = gameState.getTileInformation(new TilePosition(2, 2));
+		Tile optimumAITile = tileUpdater.calculateOptimumAITile(gameState, Level.ONE, new TilePositionComparator(), false);
+		assertEquals(optimumAITile, tileTwoTwo);
 	}
 	
 }

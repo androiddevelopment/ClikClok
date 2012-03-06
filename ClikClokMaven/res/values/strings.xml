@@ -24,5 +24,7 @@
     <string name="prizeURL">http://www.google.com</string> 
     <string name="clikText">Clik</string> 
     <string name="clokText">Clok</string> 
-     <string name="exitText">Are you sure you wish to quit?</string> 
+    <string name="exitText">Are you sure you wish to quit?</string>
+    <string name="demoText">Demo version complete</string> 
+    <string name="exitButtonText">Exit</string> 
 </resources>
