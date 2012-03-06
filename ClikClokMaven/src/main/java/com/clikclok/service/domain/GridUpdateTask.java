@@ -1,22 +1,24 @@
 package com.clikclok.service.domain;
 
-import android.util.Log;
-
 import com.clikclok.domain.OperationType;
 import com.clikclok.service.GameLogicService;
 
 public abstract class GridUpdateTask extends Task {
 	private GameLogicService gameLogicService;
+	private OperationType operationType;
 	
-	public GridUpdateTask(GameLogicService gameLogicService)
+	public GridUpdateTask(GameLogicService gameLogicService, OperationType operationType)
 	{
 		this.gameLogicService = gameLogicService;
+		this.operationType = operationType;
 	}
 	
-	public void refreshGridForOperationType(OperationType operationType, boolean enemyTilesGained)
+	public void refreshGrid(boolean enemyTilesGained)
 	{
-		Log.d(this.getClass().toString(), "Current thread is ID " + Thread.currentThread().getId());
 		gameLogicService.updateGrid(operationType, enemyTilesGained);
 	}
-	
+
+	public OperationType getOperationType() {
+		return operationType;
+	}
 }

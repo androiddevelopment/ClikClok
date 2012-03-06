@@ -1,7 +1,5 @@
 package com.clikclok.service;
 
-import android.util.Log;
-
 import com.clikclok.domain.GameState;
 import com.clikclok.domain.Level;
 import com.clikclok.domain.OperationType;
@@ -26,6 +24,7 @@ public class GameLogicService {
 	@Inject
 	private UIOperationQueue uiOperationQueue;
 	private boolean isSoundEnabled = true;
+	private boolean isDemoVersion = true;
 		
 	public void nextLevel()
 	{
@@ -54,14 +53,17 @@ public class GameLogicService {
 		if(userHasWon) 
 		{
 			tileOperationService.clearOperationsFromQueue();
-			Log.d(this.getClass().toString(), "No more AI tiles. Have cleared uiOperationQueue. Checking to see if there are more levels");
 			// If the next level is null then we there are no more levels and the game is over
 			if(Level.getNextLevel(currentLevel) == null)
 			{
 				soundsService.playUserWinsSound();
 				updateUIListener.showUserWinnerDialog();
 			}
-			else 
+			else if(isDemoVersion)
+			{
+				updateUIListener.showDemoDialog();
+			}
+			else
 			{ 
 				nextLevel();
 			}
@@ -103,7 +105,7 @@ public class GameLogicService {
 	
 	public void startLastLevelTimer()
 	{
-		uiOperationQueue.addTaskToQueue(new Task() {
+		uiOperationQueue.addUITaskToQueue(new Task() {
 			@Override
 			public void run() {
 				updateUIListener.updateCountdownTimer("6");
@@ -114,12 +116,12 @@ public class GameLogicService {
 	}
 
 	public void setTimedOut() {
-		tileOperationService.performAIOperation();
+		tileOperationService.performAIOperationAfterTimeOut();
 	}
 	
 	public void updateTimerText(final String secondsLeft)
 	{
-		uiOperationQueue.addTaskToQueue(new Task() {
+		uiOperationQueue.addUITaskToQueue(new Task() {
 			@Override
 			public void run() {
 				updateUIListener.updateCountdownTimer(secondsLeft);				
@@ -129,7 +131,7 @@ public class GameLogicService {
 	
 	public void stopTimer() 
 	{
-		uiOperationQueue.addTaskToQueue(new Task() {
+		uiOperationQueue.addUITaskToQueue(new Task() {
 			@Override
 			public void run() {
 				// Pass an empty String so that no countdown is displayed

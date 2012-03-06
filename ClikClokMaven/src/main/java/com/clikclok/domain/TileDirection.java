@@ -1,6 +1,5 @@
 package com.clikclok.domain;
 
-import android.util.Log;
 
 public enum TileDirection {
 	NORTH(270),
@@ -39,7 +38,6 @@ public enum TileDirection {
 	public boolean isFacing(TileDirection otherTileDirection)
 	{
 		float calculation = (this.degrees + otherTileDirection.degrees) % 180;
-		Log.d(this.getClass().toString(), "isFacing calculation is " + calculation);
 		// If both have the same direction then they are not facing
 		// Otherwise, the sum of opposite directions will always be a multiple of 180
 		boolean isFacing = this.degrees == otherTileDirection.degrees ? false : (calculation == 0);

@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
@@ -20,6 +20,7 @@ import com.clikclok.domain.Level;
 import com.clikclok.domain.OperationType;
 import com.clikclok.event.EnableSoundsListener;
 import com.clikclok.event.UpdateUIListener;
+import com.clikclok.service.AICalculationQueue;
 import com.clikclok.service.GameLogicService;
 import com.clikclok.service.TileOperationService;
 import com.clikclok.service.UIOperationQueue;
@@ -41,6 +42,8 @@ public class ClikClokActivity extends RoboActivity implements UpdateUIListener {
 	private GameLogicService gameLogicService;
 	@Inject
 	private UIOperationQueue uiOperationQueue;
+	@Inject
+	private AICalculationQueue aICalculationQueue;
 	@Inject
 	private TileOperationService tileOperationService;
 	@InjectView(R.id.gridView)
@@ -67,8 +70,10 @@ public class ClikClokActivity extends RoboActivity implements UpdateUIListener {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		DisplayMetrics metrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		UIUtilities.setWindowWidth(metrics.widthPixels);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		Log.d(this.getClass().toString(), "Entering onCreate");
 		super.onCreate(savedInstanceState);
 		setTheme(android.R.style.Theme_Translucent);
 		setContentView(R.layout.main);
@@ -90,7 +95,7 @@ public class ClikClokActivity extends RoboActivity implements UpdateUIListener {
 				.setFont(getString(R.string.game_font_type)));
 		countDownTimerView.setTypeface(UIUtilities
 				.setFont(getString(R.string.game_font_type)));
-
+				
 		showDialog(Constants.INTRODUCTION_DIALOG);
 	}
 
@@ -192,6 +197,18 @@ public class ClikClokActivity extends RoboActivity implements UpdateUIListener {
 			dialog = builder.create();
 			dialog.setCancelable(true);
 			break;
+		case Constants.DEMO_DIALOG:
+			builder.setMessage(getString(R.string.demoText))
+					.createLeftButton(getString(R.string.exitButtonText),
+							new View.OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									stopGame();
+								}
+							});
+			dialog = builder.create();
+			dialog.setCancelable(true);
+			break;
 		case Constants.RULES_DIALOG:
 			builder.setMessage(getString(R.string.rules)).createLeftButton(
 					getString(R.string.okButton), new View.OnClickListener() {
@@ -210,9 +227,6 @@ public class ClikClokActivity extends RoboActivity implements UpdateUIListener {
 
 	@Override
 	public void updateGrid(final int userScore, final int aiScore, final boolean userHasWon, final OperationType operationType) {
-		if(operationType.equals(OperationType.USER_OPERATION)) {
-			uiOperationQueue.startNextTask();
-		}
 		// This is added to the Handler's queue to ensure that refreshes are
 		// performed in the order that they are invoked.
 		handler.post(new Runnable() {
@@ -240,19 +254,29 @@ public class ClikClokActivity extends RoboActivity implements UpdateUIListener {
 		});
 
 	}
+	
+	@Override
+	public void showDemoDialog() {
 
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
+				showDialog(Constants.DEMO_DIALOG);
+			}
+		});
+
+	}
+	
 	/**
 	 * Width is size of tile times ten, minus one eight Height is size of tile
 	 * times thirteen. Minus an eight does not have any impact here Vertical
 	 * spacing attempts to pull cells closer to each other by one eight
 	 */
 	private void initializeGridWidthAndHeight() {
-		int layoutWidth = Constants.TILE_WIDTH * Constants.GRID_WIDTH * 7 / 8;
-		int layoutHeight = Constants.TILE_WIDTH * Constants.GRID_HEIGHT * 15
+		int layoutWidth = UIUtilities.getTileWidth() * Constants.GRID_WIDTH * 7 / 8;
+		int layoutHeight = UIUtilities.getTileWidth() * Constants.GRID_HEIGHT * 15
 				/ 16;
-		int verticalSpacing = 0 - Constants.TILE_WIDTH / 8;
-		Log.d(this.getClass().toString(), "Layout parameters are "
-				+ layoutWidth + ", " + layoutHeight + "," + verticalSpacing);
+		int verticalSpacing = 0 - UIUtilities.getTileWidth() / 8;
 		gridView.setLayoutParams(new FrameLayout.LayoutParams(layoutWidth,
 				layoutHeight));
 		countDownTimerView.setLayoutParams(new FrameLayout.LayoutParams(
@@ -262,7 +286,6 @@ public class ClikClokActivity extends RoboActivity implements UpdateUIListener {
 
 	@Override
 	protected void onDestroy() {
-		Log.d(this.getClass().toString(), "onDestroy() called");
 		tileOperationService.clearOperationsFromQueue();
 		super.onDestroy();
 	}
@@ -281,8 +304,6 @@ public class ClikClokActivity extends RoboActivity implements UpdateUIListener {
 
 	@Override
 	public void updateCountdownTimer(final String secondsLeft) {
-		Log.d(this.getClass().toString(), "Entering updateCountdownTimer with "
-				+ secondsLeft + " seconds left");
 		handler.post(new Runnable() {
 			@Override
 			public void run() {
@@ -294,8 +315,6 @@ public class ClikClokActivity extends RoboActivity implements UpdateUIListener {
 
 	@Override
 	protected void onStart() {
-		Log.d(this.getClass().toString(), "onStart() called");
-
 		initialize();
 
 		super.onStart();
@@ -307,7 +326,9 @@ public class ClikClokActivity extends RoboActivity implements UpdateUIListener {
 		if (!uiOperationQueue.isAlive()) {
 			uiOperationQueue.start();
 		}
-
+		if (!aICalculationQueue.isAlive()) {
+			aICalculationQueue.start();
+		}
 		gameLogicService.initialize();
 		tileAdapter.setGameState(gameLogicService.getGameState());
 		gridView.setAdapter(tileAdapter);

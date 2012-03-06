@@ -1,6 +1,5 @@
 package com.clikclok.event;
 
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -26,7 +25,6 @@ public class TileClickListener implements OnClickListener {
 		// We should not perform any operation for non-user tiles
 		if(!clickedTile.getColour().equals(TileColour.GREEN))
 		{
-			Log.d(this.getClass().toString(), "Tile is not a user tile so no updates to be performed");
 			return;
 		}
 		

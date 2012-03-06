@@ -1,10 +1,9 @@
 package com.clikclok.util;
 
+import android.os.CountDownTimer;
+
 import com.clikclok.service.GameLogicService;
 import com.google.inject.Inject;
-
-import android.os.CountDownTimer;
-import android.util.Log;
 
 public class AITimer {
 	private AICountDownTimer timer;
@@ -18,14 +17,12 @@ public class AITimer {
 	
 	public void startTimer()
 	{
-		Log.d(this.getClass().toString(), "Starting AI timer");
 		stopTimer();
 		timer.start();
 	}
 	
 	public void stopTimer()
 	{
-		Log.d(this.getClass().toString(), "Stopping AI timer");
 		timer.cancel();
 	}
 	
@@ -37,7 +34,6 @@ public class AITimer {
 
 		@Override
 		public void onFinish() {
-			Log.d(this.getClass().toString(), "AI timer finished");
 			gameLogicService.setTimedOut();	
 			gameLogicService.updateTimerText("" + 0);
 		}
@@ -45,7 +41,6 @@ public class AITimer {
 		@Override
 		public void onTick(long millisUntilFinished) {
 			int secondsLeft = (int)millisUntilFinished / 1000;
-			Log.d(this.getClass().toString(), secondsLeft + "seconds left in AI timer");
 			gameLogicService.updateTimerText("" + secondsLeft);
 			
 		}

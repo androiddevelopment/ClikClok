@@ -17,4 +17,6 @@ public interface UpdateUIListener {
 	public abstract void updateCountdownTimer(String secondsLeft);
 	
 	public abstract void updateVolumeIcon(boolean volumeIsOn);
+
+	void showDemoDialog();
 }

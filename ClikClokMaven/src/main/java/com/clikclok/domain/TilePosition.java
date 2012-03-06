@@ -3,8 +3,6 @@ package com.clikclok.domain;
 import java.util.Collection;
 import java.util.HashSet;
 
-import android.util.Log;
-
 import com.clikclok.util.Constants;
 
 public class TilePosition {
@@ -14,7 +12,6 @@ public class TilePosition {
 	public TilePosition(int overallPosition) {
 		positionAcrossGrid = overallPosition % Constants.GRID_WIDTH;
 		positionDownGrid = (int) overallPosition / Constants.GRID_WIDTH; 
-		Log.v(this.getClass().toString(), "positionAcrossGrid is " + positionAcrossGrid + ". positionDownGrid is " + positionDownGrid);
 	}
 	
 	public TilePosition(int positionAcrossGrid, int positionDownGrid)

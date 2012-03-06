@@ -2,15 +2,13 @@ package com.clikclok.domain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.HashSet;
-
-import android.util.Log;
 
 import com.clikclok.util.Constants;
-import com.google.inject.Singleton; 
+import com.google.inject.Singleton;
 
 @Singleton
 public class GameState {
@@ -23,7 +21,6 @@ public class GameState {
 		this.tiles = (tiles == null) ? initializeTileGrid() : tiles;
 		tilesWithColours = new HashMap<TileColour, Set<TilePosition>>();
 		initializeTilesWithColoursSet();
-		Log.v(this.getClass().toString(), "Game State is " + this);
 	}
 	
 	public GameState() 
@@ -91,7 +88,6 @@ public class GameState {
 			if(positionOfColoursBefore.size() > 0)
 			{
 				positionOfColoursBefore.remove(tile.getTilePosition());
-				Log.d(this.getClass().toString(), "After removal of " + tile + " there now exists " + positionOfColoursBefore.size() + " tiles with colour " + colourBefore);
 			}
 			Set<TilePosition> positionOfColoursAfter = tilesWithColours.get(tileColour);
 			positionOfColoursAfter.add(tile.getTilePosition());
@@ -121,10 +117,6 @@ public class GameState {
 		Set<TilePosition> tilePositions = tilesWithColours.get(tileColour);
 		
 		int numberOfTiles = tilePositions.size();
-		
-		Log.d(this.getClass().toString(), numberOfTiles + " tiles exist for colour " + tileColour);
-		Log.v(this.getClass().toString(), "These are " + tilePositions);
-		
 		return numberOfTiles;
 	}
 	
