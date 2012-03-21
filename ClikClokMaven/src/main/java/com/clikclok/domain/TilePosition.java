@@ -3,8 +3,15 @@ package com.clikclok.domain;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import com.clikclok.util.Constants;
 
+/**
+ * Holds the x and y coordinates for a {@link Tile} in the grid
+ * @author David
+ */
 public class TilePosition {
 	private int positionAcrossGrid;
 	private int positionDownGrid;
@@ -20,6 +27,11 @@ public class TilePosition {
 		this.positionDownGrid = positionDownGrid;
 	}
 	
+	/**
+	 * Determines the adjacent tile based on the specified direction
+	 * @param tileDirection
+	 * @return
+	 */
 	public TilePosition getAdjacentTilePosition(TileDirection tileDirection)
 	{
 		TilePosition adjacentTilePosition = new TilePosition(positionAcrossGrid, positionDownGrid);
@@ -35,6 +47,9 @@ public class TilePosition {
 		return adjacentTilePosition;
 	}
 	
+	/**
+	 * @return the 4 adjacent tile positions for the current tile
+	 */
 	public Collection<TilePosition> getAdjacentTilePositions()
 	{
 		// There will be at most 4 adjacent tiles that can touch a tile
@@ -67,26 +82,15 @@ public class TilePosition {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + positionAcrossGrid;
-		result = prime * result + positionDownGrid;
-		return result;
+		return new HashCodeBuilder().append(positionAcrossGrid).append(positionDownGrid).toHashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		TilePosition other = (TilePosition) obj;
-		if (positionAcrossGrid != other.positionAcrossGrid)
-			return false;
-		if (positionDownGrid != other.positionDownGrid)
-			return false;
-		return true;
+		if(obj instanceof TilePosition){
+			TilePosition other = (TilePosition) obj;
+			return new EqualsBuilder().append(positionAcrossGrid, other.positionAcrossGrid).append(positionDownGrid, other.positionDownGrid).isEquals();
+		}
+		return false;
 	}	
 }

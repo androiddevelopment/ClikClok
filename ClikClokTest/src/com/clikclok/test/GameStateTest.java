@@ -6,20 +6,22 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import com.clikclok.domain.GameStateInitializer;
 import com.clikclok.domain.TestUtilities;
 import com.clikclok.domain.Tile;
 import com.clikclok.domain.TileColour;
 import com.clikclok.domain.TileDirection;
 import com.clikclok.domain.TilePosition;
 import com.clikclok.domain.GameState;
-import com.clikclok.service.TilePositionComparator;
+import com.clikclok.service.impl.TilePositionComparator;
 
 public class GameStateTest extends TestCase{
 	private GameState gameState;	
 	
 	@Override
 	protected void setUp() throws Exception {
-		gameState = new GameState(TestUtilities.initializeSmallTestTileGrid());
+		GameStateInitializer gameStateInitializer = new GameStateInitializer();
+		gameState = gameStateInitializer.createNewGameState(TestUtilities.initializeSmallTestTileGrid());
 		super.setUp();
 	}
 	

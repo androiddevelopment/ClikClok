@@ -6,17 +6,21 @@ import android.view.View.OnClickListener;
 import com.clikclok.domain.Tile;
 import com.clikclok.domain.TileColour;
 import com.clikclok.service.TileOperationService;
+import com.clikclok.service.impl.TileOperationServiceImpl;
+import com.google.inject.Inject;
 
+/**
+ * Simple listener to handle each click on a tile. Delegates to the {@link TileOperationServiceImpl}
+ * @author David
+ */
 public class TileClickListener implements OnClickListener {
-	
 	private Tile clickedTile;
-	// Does not seem to be injected as TileClickListener is not itself injected
+	@Inject
 	private TileOperationService tileOperationService;
 		
-	public TileClickListener(Tile clickedTile, TileOperationService tileOperationService)
+	public TileClickListener(Tile clickedTile)
 	{
-		this.clickedTile = clickedTile;	
-		this.tileOperationService = tileOperationService;
+		this.clickedTile = clickedTile;			
 	}
 	
 	@Override

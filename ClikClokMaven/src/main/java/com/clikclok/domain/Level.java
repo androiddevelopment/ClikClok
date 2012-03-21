@@ -1,5 +1,10 @@
 package com.clikclok.domain;
 
+/**
+ * Enum to store the different levels in the game. The number to search is the number of tiles nearest to the top left for the AI to choose from for that level
+ * @author David
+ *
+ */
 public enum Level {
 	ONE(1, 5),
 	TWO(2, 10),
@@ -40,7 +45,6 @@ public enum Level {
 				return level;
 			}
 		}
-		
 		return null;
 	}
 

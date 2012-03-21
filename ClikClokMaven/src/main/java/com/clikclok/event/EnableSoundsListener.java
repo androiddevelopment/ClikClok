@@ -9,6 +9,10 @@ import com.clikclok.service.domain.Task;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+/**
+ * This listener is used to handle when a user clicks the sound icon to enable/disable volume
+ * @author David
+ */
 @Singleton
 public class EnableSoundsListener implements OnClickListener {
 	@Inject

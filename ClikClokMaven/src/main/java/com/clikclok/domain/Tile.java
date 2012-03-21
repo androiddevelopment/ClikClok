@@ -1,8 +1,13 @@
 package com.clikclok.domain;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
-public class Tile {
-	
+/**
+ * Class used to store all relevant information about a tile
+ * @author David
+ */
+public class Tile {	
 	private TileDirection direction;
 	private TileColour colour;
 	private TilePosition tilePosition;
@@ -16,34 +21,15 @@ public class Tile {
 	}
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((colour == null) ? 0 : colour.hashCode());
-		result = prime * result
-				+ ((direction == null) ? 0 : direction.hashCode());
-		result = prime * result
-				+ ((tilePosition == null) ? 0 : tilePosition.hashCode());
-		return result;
+		return new HashCodeBuilder().append(direction).append(colour).append(tilePosition).hashCode();
 	}
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Tile other = (Tile) obj;
-		if (colour != other.colour)
-			return false;
-		if (direction != other.direction)
-			return false;
-		if (tilePosition == null) {
-			if (other.tilePosition != null)
-				return false;
-		} else if (!tilePosition.equals(other.tilePosition))
-			return false;
-		return true;
+		if(obj instanceof Tile) {
+			Tile other = (Tile) obj;
+			return new EqualsBuilder().append(direction, other.direction).append(colour, other.colour).append(tilePosition, other.tilePosition).isEquals();
+		}
+		return false;
 	}
 	public TilePosition getTilePosition() {
 		return tilePosition;
@@ -83,6 +69,19 @@ public class Tile {
 		boolean isPointingTo = adjacentTilePosition.equals(targetTilePosition);
 		
 		return isPointingTo;
+	}
+	/**
+	 * Turns the direction of the tile clockwise once. 
+	 */
+	public void updateDirection()
+	{
+		int degrees = (int) getDirection().getDegrees();
+		
+		// Add 90 to the number of degrees. If it's 270 then we are effectively adding 90 and resetting to 0 as it's 360
+		degrees = (degrees == 270) ? 0 : (degrees += 90);
+		
+		// Set it's new direction
+		setDirection(TileDirection.getTileDirection(degrees));
 	}
 	
 	

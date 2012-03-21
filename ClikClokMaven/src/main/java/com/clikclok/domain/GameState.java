@@ -4,33 +4,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
-import com.clikclok.util.Constants;
-import com.google.inject.Singleton;
-
-@Singleton
-public class GameState {
-	
+/**
+ * This maintains the state of the grid with colours, tiles and directions. A new instance will be created
+ * for each level
+ * @author David
+ */
+public class GameState { 
 	private Tile[][] tiles;
 	private Map<TileColour, Set<TilePosition>> tilesWithColours;
 	
-	public GameState(Tile[][] tiles)
-	{
-		this.tiles = (tiles == null) ? initializeTileGrid() : tiles;
+	protected GameState(Tile[][] tiles) {
+		this.tiles = tiles;
 		tilesWithColours = new HashMap<TileColour, Set<TilePosition>>();
 		initializeTilesWithColoursSet();
 	}
 	
-	public GameState() 
-	{
-		this(null);
-    }
-	
+	/**
+	 * A set of {@link TilePosition}s is maintained for each colour. This initializes this set when the grid is first initialized
+	 */
 	private void initializeTilesWithColoursSet()
 	{
     	tilesWithColours.put(TileColour.GREEN, new HashSet<TilePosition>());
+    	tilesWithColours.put(TileColour.GREEN_TURNING, new HashSet<TilePosition>());
     	tilesWithColours.put(TileColour.RED, new HashSet<TilePosition>());
     	tilesWithColours.put(TileColour.RED_TURNING, new HashSet<TilePosition>());
     	
@@ -48,22 +45,42 @@ public class GameState {
 					tilePositions.add(tilePosition);
 				}
 			}
-		}
-    	
+		}       	
 	}
 	
+	/**
+	 * Returns the tile in the specified position
+	 * @param tilePosition
+	 * @return
+	 */
 	public Tile getTileInformation(TilePosition tilePosition)
 	{
 		return tiles[tilePosition.getPositionAcrossGrid()][tilePosition.getPositionDownGrid()];
 	}
 	
+	/**
+	 * Returns the tile in the specified position
+	 * @param positionAcross
+	 * @param positionDown
+	 * @return
+	 */
+	public Tile getTileInformation(int positionAcross, int positionDown)
+	{
+		return tiles[positionAcross][positionDown];
+	}
+	
+	/**
+	 * Update the colour and direction of the specified tile. The direction will be updated to turn clockwise
+	 * @param tile
+	 * @param tileColour
+	 */
 	public void updateTileColourAndDirection(Tile tile, TileColour tileColour) {
-		updateDirection(tile);
+		tile.updateDirection();
 		updateTileColour(tile, tileColour);
 	}
 	
 	/**
-	 * This is only used for unit tests
+	 * Update the colour and direction of the specified tile. 
 	 * @param tile
 	 * @param tileColour
 	 */
@@ -72,12 +89,18 @@ public class GameState {
 		updateTileColour(tile, tileColour);
 	}
 	
+	/**
+	 * Update the colour of the specified tile. This will also update the relevant sets of {@link TilePosition}s
+	 * @param tile
+	 * @param tileColour
+	 */
 	public void updateTileColour(Tile tile, TileColour tileColour) 
 	{
 		TileColour colourBefore = tile.getColour();	
 		
 		tile.setColour(tileColour);
 		
+		// Only update the tile positions if the colours are different
 		if(!colourBefore.equals(tileColour))
 		{
 			Set<TilePosition> positionOfColoursBefore = tilesWithColours.get(colourBefore);
@@ -94,18 +117,26 @@ public class GameState {
 		}					
 	}
 
+	/**
+	 * Get the set of {@link TilePosition}s for the specified colour
+	 * @param tileColour
+	 * @return
+	 */
 	public Set<TilePosition> getTilePositionsForColour(TileColour tileColour)
 	{
 		return tilesWithColours.get(tileColour); 
 	}
 	
+	/**
+	 * When the AI cannot update any tiles on the current turn we select a tile for the AI to target and then update the tile closest to this
+	 * @param tileColour
+	 * @return
+	 */
 	public TilePosition getTilePositionForAIToTarget(TileColour tileColour) {
 		
 		Set<TilePosition> tilePositions = getTilePositionsForColour(tileColour);
-		
-		int randomNumber = (int) (Math.random() * tilePositions.size());
-		
-		return new ArrayList<TilePosition>(tilePositions).get(randomNumber);
+		// Will always return the first tile position so that we are picking a consistent tile to target
+		return new ArrayList<TilePosition>(tilePositions).get(0);
 	}
 	
 	/**
@@ -114,10 +145,7 @@ public class GameState {
 	 */
 	public int getNumberOfTilesForColour(TileColour tileColour)
 	{
-		Set<TilePosition> tilePositions = tilesWithColours.get(tileColour);
-		
-		int numberOfTiles = tilePositions.size();
-		return numberOfTiles;
+		return getTilePositionsForColour(tileColour).size();
 	}
 	
 	public int getGridWidth()
@@ -152,41 +180,4 @@ public class GameState {
 		
 		return new GameState(deepCopyOfTiles);
 	}
-	
-	private Tile[][] initializeTileGrid()
-	{
-		Random random = new Random();
-    	
-    	tiles = new Tile[Constants.GRID_WIDTH][Constants.GRID_HEIGHT];
-    	
-    	for(int i = 0; i < Constants.GRID_WIDTH; i++)
-    	{
-    		for(int j = 0; j < Constants.GRID_HEIGHT; j++)
-    		{
-    			// Generate a number between 0 and 3, and multiply this by 90 to get the correct number of degrees
-    			int degrees = (random.nextInt(4)) * 90;
-    			tiles[i][j] = new Tile(TileDirection.getTileDirection(degrees), TileColour.GREY, new TilePosition(i, j));
-    		}
-    	}
-    	
-    	// Initialize the first 2 tiles in top left and bottom right corners to be green and red respectively
-		Tile initialGreenTile = tiles[0][0];
-		initialGreenTile.setColour(TileColour.GREEN);
-		Tile initialRedTile = tiles[getGridWidth() - 1][getGridHeight() - 1];
-		initialRedTile.setColour(TileColour.RED);
-    	
-    	return tiles;
-	}
-	
-	private void updateDirection(Tile tile)
-	{
-		int degrees = (int) tile.getDirection().getDegrees();
-		
-		// Add 90 to the number of degrees. If it's 270 then we are effectively adding 90 and resetting to 0 as it's 360
-		degrees = (degrees == 270) ? 0 : (degrees += 90);
-		
-		// Set it's new direction
-		tile.setDirection(TileDirection.getTileDirection(degrees));
-	}
-
 }

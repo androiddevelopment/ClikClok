@@ -1,6 +1,11 @@
 package com.clikclok.util;
 
 
+/**
+ * Stores all contants used throughout the application
+ * @author David
+ *
+ */
 public class Constants {
 	public static final int GRID_WIDTH = 8;
 	public static final int GRID_HEIGHT = 10;
@@ -18,4 +23,7 @@ public class Constants {
 	public static final int ENEMY_GAINS_THRESHOLD = GRID_HEIGHT * GRID_WIDTH / 3;
 	public static final int AI_CALCULATION_COMPLETE = 1;
 	public static final int GRIDVIEW_UPDATE_COMPLETE = 2;
+	public static final long PAUSE_LENGTH = 1750;
+	public static final int NUMBER_COUNTDOWN_SECONDS = 5;
+	public static final int NUMBER_OF_SECONDS = 6;
 }

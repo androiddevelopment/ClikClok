@@ -1,23 +1,18 @@
 package com.clikclok.service;
 
-import android.os.Handler;
-import android.os.Looper;
+import com.clikclok.service.impl.TileOperationServiceImpl.AICalculationTask;
 
-import com.google.inject.Singleton;
+public interface AICalculationQueue {
 
-@Singleton
-public class AICalculationQueue extends Thread {
-	private Handler handler;
-	
-	@Override
-	public void run() {
-		Looper.prepare();
-		handler = new Handler();
-		Looper.loop();
-	}
-	
-	public void addAICalculationTaskToQueue(Runnable task) {
-		handler.post(task);
-	}
-	
+	/**
+	 * Adds the specified task to the queue
+	 * @param task
+	 */
+	public abstract void addAICalculationTaskToQueue(AICalculationTask task);
+
+	/**
+	 * Starts the thread if it's not already started
+	 */
+	public abstract void startQueueThread();
+
 }

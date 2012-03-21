@@ -1,5 +1,6 @@
 package com.clikclok.view;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -10,6 +11,12 @@ import android.widget.TextView;
 import com.clikclok.R;
 import com.clikclok.util.UIUtilities;
 
+/**
+ * This is a custom implementation of a dialog to allow us to style our own buttons, background etc. The {@link AlertDialog} does not allow
+ * us to style easily
+ * @author David
+ *
+ */
 public class CustomDialog extends Dialog {
 	
 	private Button leftButton;
@@ -52,6 +59,7 @@ public class CustomDialog extends Dialog {
 		leftButton.setText(new String(leftButtonText));
 		leftButton.setOnClickListener(leftButtonClickListener);
 				
+		// If we only need one button then we will remove the right one completely
 		if(rightButtonText != null && rightButtonText.length() >= 0)
 		{
 			rightButton.setText(new String(rightButtonText));
@@ -67,6 +75,11 @@ public class CustomDialog extends Dialog {
 		dialogText.setText(text);
 	}
 		
+	/**
+	 * Simple builder class to allow us to customize our {@link CustomDialog}
+	 * @author David
+	 *
+	 */
 	public static class Builder {
 		private String dialogString;
 		private String leftButtonText;

@@ -4,6 +4,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import com.clikclok.domain.GameStateInitializer;
 import com.clikclok.domain.Level;
 import com.clikclok.domain.TestUtilities;
 import com.clikclok.domain.Tile;
@@ -11,17 +12,20 @@ import com.clikclok.domain.TileColour;
 import com.clikclok.domain.TileDirection;
 import com.clikclok.domain.TilePosition;
 import com.clikclok.domain.GameState;
-import com.clikclok.service.TilePositionComparator;
 import com.clikclok.service.TileUpdateLogicService;
+import com.clikclok.service.impl.TilePositionComparator;
+import com.clikclok.service.impl.TileUpdateLogicServiceImpl;
 
 public class TileUpdateLogicServiceTest extends TestCase {
 	private TileUpdateLogicService tileUpdater;	
 	private GameState gameState;
+	private GameStateInitializer gameStateInitializer;
 	
 	@Override
 	protected void setUp() throws Exception {
-		tileUpdater = new TileUpdateLogicService();
-		gameState = new GameState(TestUtilities.initializeSmallTestTileGrid());
+		tileUpdater = new TileUpdateLogicServiceImpl();
+		gameStateInitializer = new GameStateInitializer();
+		gameState = gameStateInitializer.createNewGameState(TestUtilities.initializeSmallTestTileGrid());
 		Level.setGridSize(gameState.getTileGridSize());
 		super.setUp();
 	}
@@ -124,14 +128,14 @@ public class TileUpdateLogicServiceTest extends TestCase {
 	}
 	
 	public void testCalculateOptimumAITileWithLessNumberOfOppositionColoursThanGreyColours() {
-		gameState = new GameState(TestUtilities.initializeSmallTestTileGridPredominantlyRed());
+		gameState = gameStateInitializer.createNewGameState(TestUtilities.initializeSmallTestTileGridPredominantlyRed());
 		Tile tileZeroOne = gameState.getTileInformation(new TilePosition(0, 1));
 		Tile optimumAITile = tileUpdater.calculateOptimumAITile(gameState, Level.FIVE, new TilePositionComparator(), false);
 		assertEquals(tileZeroOne, optimumAITile);
 	}
 	
 	public void testCalculateOptimumAITileWithTopLeftOccupied() {
-		gameState = new GameState(TestUtilities.initializeSmallTestTileGridWithTopLeftOccupied());
+		gameState = gameStateInitializer.createNewGameState(TestUtilities.initializeSmallTestTileGridWithTopLeftOccupied());
 		Tile tileTwoThree = gameState.getTileInformation(new TilePosition(2, 3));
 		Tile tileThreeTwo = gameState.getTileInformation(new TilePosition(3, 2));
 		Tile optimumAITile = tileUpdater.calculateOptimumAITile(gameState, Level.ONE, new TilePositionComparator(), false);
@@ -139,7 +143,7 @@ public class TileUpdateLogicServiceTest extends TestCase {
 	}
 	
 	public void testCalculateOptimumAITileWithGreenTileInTopLeft() {
-		gameState = new GameState(TestUtilities.initializeSmallTestTileGridWithGreenTileInTopLeft());
+		gameState = gameStateInitializer.createNewGameState(TestUtilities.initializeSmallTestTileGridWithGreenTileInTopLeft());
 		Tile tileTwoTwo = gameState.getTileInformation(new TilePosition(2, 2));
 		Tile optimumAITile = tileUpdater.calculateOptimumAITile(gameState, Level.ONE, new TilePositionComparator(), false);
 		assertEquals(optimumAITile, tileTwoTwo);

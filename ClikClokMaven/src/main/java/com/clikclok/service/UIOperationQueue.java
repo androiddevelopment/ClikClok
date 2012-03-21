@@ -1,78 +1,59 @@
 package com.clikclok.service;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-
+import com.clikclok.ClikClokActivity;
 import com.clikclok.domain.OperationType;
 import com.clikclok.service.domain.GridUpdateTask;
-import com.clikclok.service.domain.UIOperationHandler;
-import com.clikclok.util.Constants;
-import com.google.inject.Singleton;
+import com.clikclok.service.domain.Task;
+import com.clikclok.service.impl.TileOperationServiceImpl.AICalculationTask;
 
-@Singleton
-public class UIOperationQueue extends Thread {
-	private Handler handler;
-	private Map<OperationType, GridUpdateTask> gridUpdateTasks;
+/**
+ * All UI operations that we wish to sequence should ideally be invoked on a separate thread to the main thread. This service allows UI tasks to be added from the main thread, 
+ * and are then invoked in order on this separate thread. These tasks will typically invoke the {@link ClikClokActivity} to perform a UI update on the main thread
+ * @author David
+ */
+public interface UIOperationQueue {
+
 	
-	@Override
-	public void run() {
-		Looper.prepare();
-		
-		handler = new UIOperationHandler(this);
-		gridUpdateTasks = new HashMap<OperationType, GridUpdateTask>();
-						
-		Looper.loop();	
-	}
+	/**
+	 * Add the task to perform calculation of tiles updated, as well as the grid refresh, to the queue
+	 * @param task
+	 */
+	void addGridUpdateTaskToQueue(GridUpdateTask task);
+
+	/**
+	 * Add straightforward UI update tasks to the queue
+	 * @param task
+	 */
+	void addUITaskToQueue(Task task);
+
+	/**
+	 * Clear the queue of all tasks
+	 */
+	void clearQueue();
+
+	/**
+	 * Start the next {@link GridUpdateTask} in the queue
+	 * @param currentOperationType
+	 */
+	void startNextGridUpdateTask(OperationType currentOperationType);
+
+	/**
+	 * This is invoked by the {@link AICalculationTask} when the AI calculation is complete. When the AI
+	 * calculation is complete we can then update the grid with the selected optimum tile
+	 */
+	void notifyAICalculationComplete();
+
+	/**
+	 * Indicates whether there are still tasks in the queue to be processed
+	 * @return
+	 */
+	boolean hasUnprocessedTasks();
 	
-	public void addGridUpdateTaskToQueue(final GridUpdateTask task)
-	{
-		GridUpdateTask taskReturned = gridUpdateTasks.put(task.getOperationType(), task);
-		if(taskReturned != null) {
-			throw new RuntimeException("Attempted to add a new task for an operation type" + task.getOperationType() + " that already has an unprocessed task");
-		}
-	}
-	
-	public void addUITaskToQueue(final Runnable task)
-	{
-		handler.post(task);		
-	}
-	
-	public void clearQueue(){
-		handler.removeCallbacksAndMessages(null);
-		gridUpdateTasks.clear();
-	}
-	
-	public void startNextGridUpdateTask(OperationType currentOperationType) {
-		OperationType nextOperationType = currentOperationType.getNextOperationType();
-		
-		if(nextOperationType.equals(OperationType.AI_SELECTION_OPERATION)){
-			Message message = handler.obtainMessage(Constants.GRIDVIEW_UPDATE_COMPLETE);
-			handler.sendMessage(message);
-		}
-		else
-		{
-			GridUpdateTask task = gridUpdateTasks.remove(nextOperationType);
-			if(task != null) {
-				addUITaskToQueue(task);
-			}
-			
-		}
-	}
-	
-	public void notifyAICalculationComplete() {
-		Message message = handler.obtainMessage(Constants.AI_CALCULATION_COMPLETE);
-		handler.sendMessage(message);
-	}
-	
-	public GridUpdateTask getTaskForOperationType(OperationType operationType) {
-		GridUpdateTask task = gridUpdateTasks.remove(operationType);
-		if(task == null) {
-			throw new RuntimeException("No task exists for operation type " + operationType);
-		}
-		return task;
-	}
+	/**
+	 * Initializes the thread if it is dead
+	 */
+	void startQueueThread();
+
+	GridUpdateTask getTaskForOperationType(OperationType operationType);
+
 }

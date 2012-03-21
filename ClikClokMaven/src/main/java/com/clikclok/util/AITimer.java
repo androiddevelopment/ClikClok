@@ -4,7 +4,14 @@ import android.os.CountDownTimer;
 
 import com.clikclok.service.GameLogicService;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+/**
+ * Countdown timer that will be kicked off in level 5 to provide the user with a limited timeframe to
+ * select their tile
+ * @author David
+ */
+@Singleton
 public class AITimer {
 	private AICountDownTimer timer;
 	@Inject 
@@ -12,15 +19,21 @@ public class AITimer {
 	
 	public AITimer()
 	{
-		timer = new AICountDownTimer(6 * 1000, 1 * 1000);
+		timer = new AICountDownTimer(Constants.NUMBER_OF_SECONDS * 1000, 1 * 1000);
 	}
 	
+	/**
+	 * Stops any existing timer and starts a new one
+	 */
 	public void startTimer()
 	{
 		stopTimer();
 		timer.start();
 	}
 	
+	/**
+	 * Stops the running timer
+	 */
 	public void stopTimer()
 	{
 		timer.cancel();
@@ -34,14 +47,14 @@ public class AITimer {
 
 		@Override
 		public void onFinish() {
-			gameLogicService.setTimedOut();	
-			gameLogicService.updateTimerText("" + 0);
+			// Notifies the logic service that the timer has expired
+			gameLogicService.updateTimerText(0);
 		}
 
 		@Override
 		public void onTick(long millisUntilFinished) {
 			int secondsLeft = (int)millisUntilFinished / 1000;
-			gameLogicService.updateTimerText("" + secondsLeft);
+			gameLogicService.updateTimerText(secondsLeft);
 			
 		}
 		
