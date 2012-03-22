@@ -1,5 +1,8 @@
 package com.clikclok.view;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +14,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.clikclok.domain.Tile;
+import com.clikclok.domain.TileColour;
+import com.clikclok.domain.TileDirection;
 import com.clikclok.domain.TilePosition;
 import com.clikclok.event.TileClickListener;
 import com.clikclok.service.GameLogicService;
@@ -26,12 +31,17 @@ import com.google.inject.Singleton;
 @Singleton
 public class TileAdapter extends BaseAdapter{ 
 	@Inject
-	private Application application;
+	private static Application application;
 	@Inject
-	private Injector injector;
+	private static Injector injector;
 	@Inject
 	private GameLogicService gameLogicService;
-				
+	private static Map<TileColour, Map<TileDirection, Bitmap>> bitmaps;
+	
+	private TileAdapter() {
+		super();
+	}
+
 	@Override
 	public int getCount() {
 		// This will return the width and height of the grid
@@ -80,14 +90,32 @@ public class TileAdapter extends BaseAdapter{
 	 */
 	private Bitmap loadBitmapForImage(Tile tile)
 	{
-		Bitmap bitmap = BitmapFactory.decodeResource(application.getResources(), tile.getColour().getIconColour());
-		
-		Matrix matrix = new Matrix();
-		matrix.setRotate(tile.getDirection().getDegrees());
-		
-		Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-		rotatedBitmap = Bitmap.createScaledBitmap(rotatedBitmap, 60, 60, true);
-		
-		return rotatedBitmap;
-	}		
+		Map<TileDirection, Bitmap> bitmapsForDirections = bitmaps.get(tile.getColour());
+		return bitmapsForDirections.get(tile.getDirection());
+	}
+	
+	/**
+	 * This ensures that proper initialization is performed before the TileAdapter is returned
+	 * @return
+	 */
+	public static TileAdapter initializeAdapter()
+	{
+		TileAdapter tileAdapter = new TileAdapter();
+		injector.injectMembers(tileAdapter);
+		bitmaps = new HashMap<TileColour, Map<TileDirection,Bitmap>>();
+		for(TileColour tileColour : TileColour.values()){
+			Bitmap bitmap = BitmapFactory.decodeResource(application.getResources(), tileColour.getIconColour());
+			Map<TileDirection, Bitmap> bitmapsForDirections = new HashMap<TileDirection, Bitmap>();
+			for(TileDirection tileDirection : TileDirection.values())
+			{
+				Matrix matrix = new Matrix();
+				matrix.setRotate(tileDirection.getDegrees());
+				Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+				rotatedBitmap = Bitmap.createScaledBitmap(rotatedBitmap, 60, 60, true);
+				bitmapsForDirections.put(tileDirection, rotatedBitmap);
+			}
+			bitmaps.put(tileColour, bitmapsForDirections);
+		}
+		return tileAdapter;
+	}
 }

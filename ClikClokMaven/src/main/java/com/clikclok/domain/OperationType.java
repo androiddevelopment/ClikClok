@@ -2,26 +2,29 @@ package com.clikclok.domain;
 
 import com.clikclok.R;
 import com.clikclok.service.UIOperationQueue;
+import com.clikclok.util.Constants;
 
 /**
  * Enum to hold the various operation types allowed, as well as their associated sounds
  * @author David
  */
 public enum OperationType {
-	USER_SELECTION_OPERATION,
-	USER_OPERATION(R.raw.user_move, R.raw.user_gains_made),
-	AI_SELECTION_OPERATION,
-	AI_OPERATION(R.raw.random_sound_2, R.raw.ai_gains_made);
+	USER_SELECTION_OPERATION(R.raw.user_move, R.raw.user_gains_made, Constants.PAUSE_LENGTH_AFTER_SELECTION_TASK),
+	USER_OPERATION(0, 0, Constants.PAUSE_LENGTH_AFTER_UPDATE_TASK),
+	AI_SELECTION_OPERATION(R.raw.random_sound_2, R.raw.ai_gains_made, Constants.PAUSE_LENGTH_AFTER_SELECTION_TASK),
+	AI_OPERATION(0, 0, Constants.PAUSE_LENGTH_AFTER_UPDATE_TASK);
 	
 	private int moveSoundResource;
 	private int enemyTilesGainedSoundResource;	
+	private long pauseLength;
 	
 	private OperationType() {
 	}
 	
-	private OperationType(int moveSoundResource, int enemyTilesGainedSoundResource) {
+	private OperationType(int moveSoundResource, int enemyTilesGainedSoundResource, long pauseLength) {
 		this.moveSoundResource = moveSoundResource;
 		this.enemyTilesGainedSoundResource = enemyTilesGainedSoundResource;
+		this.pauseLength = pauseLength;
 	}
 
 	public boolean isUserOperationNext() {
@@ -54,5 +57,10 @@ public enum OperationType {
 		}
 		return nextOperationType;
 	}
+	
+	public long getPauseLength() {
+		return pauseLength;
+	}
+
 	
 }

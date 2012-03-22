@@ -35,7 +35,6 @@ import com.google.inject.Injector;
  * @author David
  */
 public class ClikClokActivity extends RoboActivity implements UpdateUIService {
-	@Inject
 	private TileAdapter tileAdapter;
 	@Inject
 	private GameLogicService gameLogicService;
@@ -74,6 +73,7 @@ public class ClikClokActivity extends RoboActivity implements UpdateUIService {
 		super.onCreate(savedInstanceState);
 		setTheme(android.R.style.Theme_Translucent);
 		setContentView(R.layout.main);
+		tileAdapter = TileAdapter.initializeAdapter();
 		// Initialize the grid's view and height
 		initializeGridWidthAndHeight();
 		gridView.setNumColumns(Constants.GRID_WIDTH);
@@ -336,7 +336,6 @@ public class ClikClokActivity extends RoboActivity implements UpdateUIService {
 		// if the volume was previously disabled then the icon should reflect this
 		updateVolumeIcon(gameLogicService.isSoundEnabled());
 		updateLevelView(1);
-		// TODO Does this need to be reinjected? 
 		gridView.setAdapter(tileAdapter);
 	}
 

@@ -12,6 +12,7 @@ import com.clikclok.service.impl.SoundsServiceImpl;
 import com.clikclok.service.impl.TileOperationServiceImpl;
 import com.clikclok.service.impl.TileUpdateLogicServiceImpl;
 import com.clikclok.service.impl.UIOperationQueueImpl;
+import com.clikclok.view.TileAdapter;
 import com.google.inject.AbstractModule;
 
 /**
@@ -21,6 +22,7 @@ import com.google.inject.AbstractModule;
 public class ClikClokIOCModule extends AbstractModule {
 	@Override
 	protected void configure() {
+		requestStaticInjection(TileAdapter.class);
 		bind(UIOperationQueue.class).to(UIOperationQueueImpl.class);
 		bind(AICalculationQueue.class).to(AICalculationQueueImpl.class);
 		bind(GameLogicService.class).to(GameLogicServiceImpl.class);

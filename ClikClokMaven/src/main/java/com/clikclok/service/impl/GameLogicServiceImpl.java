@@ -95,7 +95,7 @@ public class GameLogicServiceImpl implements GameLogicService {
 	@Override
 	public void updateGrid(OperationType operationType, boolean enemyTilesGained)
 	{
-		// Updte the grid on the UPI thread
+		// Update the grid on the UPI thread
 		updateUIGrid(operationType);				
 		
 		boolean userHasWon = getNumberOfRedTiles() == 0;

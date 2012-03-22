@@ -40,7 +40,7 @@ public class SoundsServiceImpl implements SoundsService {
 			mediaPlayer.stop();
 		}
 		// There are no sounds for these 2 operation types
-		if(!operationType.equals(OperationType.AI_SELECTION_OPERATION) && !operationType.equals(OperationType.USER_SELECTION_OPERATION))
+		if(!operationType.equals(OperationType.AI_OPERATION) && !operationType.equals(OperationType.USER_OPERATION))
 		{
 			if(enemyGainsMade)
 			{			

@@ -24,16 +24,25 @@ public class ResumeNextUITask implements Runnable{
 	public void run() {
 		// If we have a winner then we will pause before the dialog is displayed
 		if(haveWinner) {
-			try {
-				Thread.sleep(Constants.PAUSE_LENGTH);
-			} catch (InterruptedException e) {
-				// This shouldn't happen
-			}
+			pauseThread(Constants.PAUSE_LENGTH_BEFORE_DIALOG);
 		}
+		else
+		{
+			pauseThread(operationType.getPauseLength());
+		}
+		
 		// For some reason sometimes this UIOperationQueue has been null
 		// If the user has won then we do not want to perform the next operation in the queue
 		if(uiOperationQueue != null && !haveWinner) {
 			uiOperationQueue.startNextGridUpdateTask(operationType);
+		}
+	}
+
+	private void pauseThread(long seconds) {
+		try {
+			Thread.sleep(seconds);
+		} catch (InterruptedException e) {
+			// This shouldn't happen
 		}
 	}
 

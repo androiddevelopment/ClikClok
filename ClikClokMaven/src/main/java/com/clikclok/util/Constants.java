@@ -23,7 +23,9 @@ public class Constants {
 	public static final int ENEMY_GAINS_THRESHOLD = GRID_HEIGHT * GRID_WIDTH / 3;
 	public static final int AI_CALCULATION_COMPLETE = 1;
 	public static final int GRIDVIEW_UPDATE_COMPLETE = 2;
-	public static final long PAUSE_LENGTH = 1750;
+	public static final long PAUSE_LENGTH_BEFORE_DIALOG = 1750;
 	public static final int NUMBER_COUNTDOWN_SECONDS = 5;
 	public static final int NUMBER_OF_SECONDS = 6;
+	public static final long PAUSE_LENGTH_AFTER_SELECTION_TASK = 600;
+	public static final long PAUSE_LENGTH_AFTER_UPDATE_TASK = 500;
 }
