@@ -79,8 +79,7 @@ public class TileAdapter extends BaseAdapter{
 
         imageView.setImageBitmap(loadBitmapForImage(thisTile));
         
-        return imageView;
-
+        return imageView; 
 	}
 	
 	/**
